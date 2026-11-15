@@ -109,7 +109,8 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             tempTone = tone,
             rearBelt = when (rearRightBeltBuckled) { true -> "맴"; false -> "안 맴"; null -> "모름" },
             driverSeat = when (driverSeatOccupied) { true -> "앉음"; false -> "비어 있음"; null -> "모름" },
-            driving = isDriving
+            driving = isDriving,
+            applied = listOfNotNull(appliedHvacTemp?.let { "공조 ${if (it % 1f == 0f) it.toInt().toString() else "%.1f".format(it)}°C" })
         )
     }
 

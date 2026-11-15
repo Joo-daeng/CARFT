@@ -202,6 +202,21 @@ private fun CarStateCard(car: CarStateUi) {
             VerticalDivider()
             MetricTile("운전석", car.driverSeat, Modifier.weight(1.1f), emphasized = car.driverSeat == "앉음")
         }
+        if (car.applied.isNotEmpty()) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("적용 중", style = CarftType.Caption, color = CarftColors.TextTertiary)
+                car.applied.forEach { label ->
+                    Row(
+                        Modifier.height(36.dp).background(CarftColors.SurfaceRaised, CarftShapes.Small).padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        CarftIconView(CarftIcon.Fan, size = 17.dp, tint = CarftColors.TextSecondary)
+                        Text(label, style = CarftType.Chip, color = CarftColors.TextSecondary)
+                    }
+                }
+            }
+        }
     }
 }
 

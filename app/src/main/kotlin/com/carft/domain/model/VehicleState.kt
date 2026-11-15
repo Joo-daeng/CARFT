@@ -7,6 +7,7 @@ data class VehicleState(
     val rearRightSeatOccupied: Boolean? = null,
     val rearRightBeltBuckled: Boolean? = null,
     val wiperOn: Boolean? = null,
+    val appliedHvacTemp: Float? = null,
     val isDriving: Boolean = false,
     val hour: Int = 8,
     val targetHvacTemp: Float = 20f,
