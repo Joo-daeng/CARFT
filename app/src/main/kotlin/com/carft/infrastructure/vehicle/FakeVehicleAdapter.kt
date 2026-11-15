@@ -38,11 +38,11 @@ class FakeVehicleAdapter : VehicleAdapter {
         return when (action) {
             is ActionBlock.SetHvacTemperature -> {
                 fakeState["hvacTargetTemp"] = action.targetTemp
-                "공조 설정: ${action.targetTemp}°C"
+                "공조 ${if (action.targetTemp % 1f == 0f) action.targetTemp.toInt() else action.targetTemp}°C"
             }
             is ActionBlock.SetSeatHeat -> {
                 fakeState["${action.seat}SeatHeat"] = action.level
-                "${action.seat}석 열선: ${action.level}단"
+                "${if (action.seat == "rearRight") "뒷좌석" else "운전석"} 열선 ${action.level}단"
             }
             is ActionBlock.SetAmbientLight -> {
                 fakeState["ambientLight"] = action.color
