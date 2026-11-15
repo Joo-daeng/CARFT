@@ -189,18 +189,17 @@ private fun CarStateCard(car: CarStateUi) {
         CardHeader("지금 차 상태", icon = CarftIcon.Car) {
             StatusPill(if (car.driving) "주행 중" else "정차 중", if (car.driving) StatusTone.Warning else StatusTone.Neutral, icon = if (car.driving) CarftIcon.Car else CarftIcon.Pause)
         }
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
             MetricTile(
                 "실내 온도",
                 car.interiorTemp ?: "모름",
-                Modifier.weight(1.1f),
                 unit = car.interiorTemp?.let { "°C" },
                 caption = car.tempCaption
             )
             VerticalDivider()
-            MetricTile("뒷좌석 벨트", car.rearBelt, Modifier.weight(1f), emphasized = car.rearBelt == "맴")
+            MetricTile("뒷좌석 벨트", car.rearBelt, emphasized = car.rearBelt == "맴")
             VerticalDivider()
-            MetricTile("운전석", car.driverSeat, Modifier.weight(1.1f), emphasized = car.driverSeat == "앉음")
+            MetricTile("운전석", car.driverSeat, emphasized = car.driverSeat == "앉음")
         }
         if (car.applied.isNotEmpty()) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {

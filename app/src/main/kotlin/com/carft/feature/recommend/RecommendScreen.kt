@@ -5,10 +5,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,8 +19,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.carft.designsystem.component.BlockChip
+import com.carft.designsystem.component.BlockChipSize
 import com.carft.designsystem.component.CarftButton
 import com.carft.designsystem.component.CarftButtonSize
 import com.carft.designsystem.component.CarftCard
@@ -44,12 +50,9 @@ fun RecommendScreen(
 ) {
     CarftScreen(topBar = { CarftTopBar("추천 옵션", subtitle = "가져온 뒤 내 상황에 맞게 고칠 수 있어요", onBack = onBack) }) {
         Column(Modifier.fillMaxSize().padding(top = 12.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
-                horizontalArrangement = Arrangement.spacedBy(26.dp)
-            ) {
+            EqualHeightRow(gap = 24.dp) {
                 state.templates.forEach { template ->
-                    TemplateCard(template, onImport = { onImport(template.id) }, modifier = Modifier.weight(1f).fillMaxHeight())
+                    TemplateCard(template, onImport = { onImport(template.id) })
                 }
             }
             Spacer(Modifier.weight(1f))
@@ -66,20 +69,35 @@ fun RecommendScreen(
 }
 
 @Composable
+private fun EqualHeightRow(gap: Dp, content: @Composable () -> Unit) {
+    SubcomposeLayout(Modifier.fillMaxWidth()) { constraints ->
+        val gapPx = gap.roundToPx()
+        val loose = subcompose("measure", content)
+        val width = ((constraints.maxWidth - gapPx * (loose.size - 1)) / loose.size.coerceAtLeast(1)).coerceAtLeast(0)
+        val height = loose.maxOfOrNull { it.measure(Constraints(maxWidth = width, minWidth = width)).height } ?: 0
+        val measurables = subcompose("place", content)
+        val placeables = measurables.map { it.measure(Constraints.fixed(width, height)) }
+        layout(constraints.maxWidth, height) {
+            placeables.forEachIndexed { i, p -> p.place(i * (width + gapPx), 0) }
+        }
+    }
+}
+
+@Composable
 private fun TemplateCard(template: TemplateUi, onImport: () -> Unit, modifier: Modifier = Modifier) {
     CarftCard(modifier, padding = 32.dp, spacing = 0.dp) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             TagChip(template.tag)
             if (template.popular) PopularChip()
         }
-        Text(template.title, style = CarftType.CardTitle, color = CarftColors.TextPrimary, modifier = Modifier.padding(top = 22.dp))
-        Text(template.description, style = CarftType.BodyS, color = CarftColors.TextSecondary, modifier = Modifier.padding(top = 12.dp))
-        RuleBox(template, Modifier.padding(top = 24.dp))
+        Text(template.title, style = CarftType.Title.copy(fontSize = 32.sp), color = CarftColors.TextPrimary, modifier = Modifier.padding(top = 22.dp))
+        Text(template.description, style = CarftType.BodyM.copy(fontWeight = FontWeight.Normal), color = CarftColors.TextSecondary, modifier = Modifier.padding(top = 22.dp))
+        RuleBox(template, Modifier.padding(top = 22.dp))
         StatusPill(
             text = if (template.runsWhileDriving) "주행 중에도 실행" else "정차 중에만 실행",
             tone = if (template.runsWhileDriving) StatusTone.Success else StatusTone.Warning,
             icon = if (template.runsWhileDriving) CarftIcon.Car else CarftIcon.Pause,
-            modifier = Modifier.padding(top = 24.dp)
+            modifier = Modifier.padding(top = 22.dp)
         )
         Spacer(Modifier.weight(1f))
         CarftButton(
@@ -96,12 +114,12 @@ private fun TemplateCard(template: TemplateUi, onImport: () -> Unit, modifier: M
 private fun TagChip(text: String) {
     Box(
         Modifier
-            .height(32.dp)
-            .background(CarftColors.SurfaceRaised, CarftShapes.Chip)
-            .padding(horizontal = 12.dp),
+            .height(36.dp)
+            .background(CarftColors.SurfaceRaised, CarftShapes.Small)
+            .padding(horizontal = 14.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text, style = CarftType.Caption, color = CarftColors.TextSecondary)
+        Text(text, style = CarftType.Chip, color = CarftColors.TextSecondary)
     }
 }
 
@@ -109,14 +127,15 @@ private fun TagChip(text: String) {
 private fun PopularChip() {
     Row(
         Modifier
-            .height(32.dp)
-            .border(1.5.dp, CarftColors.Situation, CarftShapes.Pill)
-            .padding(horizontal = 12.dp),
+            .height(36.dp)
+            .background(CarftColors.Situation.copy(alpha = 0.16f), CarftShapes.Pill)
+            .border(1.5.dp, CarftColors.Situation.copy(alpha = 0.45f), CarftShapes.Pill)
+            .padding(horizontal = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        CarftIconView(CarftIcon.Star, size = 18.dp, tint = CarftColors.Situation)
-        Text("인기", style = CarftType.Chip, color = CarftColors.Situation)
+        CarftIconView(CarftIcon.Star, size = 20.dp, tint = CarftColors.Situation)
+        Text("인기", style = CarftType.LabelS, color = CarftColors.Situation)
     }
 }
 
@@ -125,9 +144,9 @@ private fun RuleBox(template: TemplateUi, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(CarftColors.App, CarftShapes.Small)
-            .padding(horizontal = 20.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+            .background(CarftColors.App, CarftShapes.Button)
+            .padding(22.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         RuleLine("언제", template.rule.situation)
         RuleLine("만약", template.rule.conditions)
@@ -135,15 +154,16 @@ private fun RuleBox(template: TemplateUi, modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun RuleLine(label: String, chips: List<BlockChipUi>) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(label, style = CarftType.Caption, color = CarftColors.TextTertiary, modifier = Modifier.width(76.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+    Row(Modifier.padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text(label, style = CarftType.Caption.copy(fontWeight = FontWeight.Bold), color = CarftColors.TextTertiary, modifier = Modifier.width(74.dp))
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             if (chips.isEmpty()) {
                 AlwaysChip()
             } else {
-                chips.forEach { BlockChip(it.text, it.kind, icon = it.icon) }
+                chips.forEach { BlockChip(it.text, it.kind, icon = it.icon, size = BlockChipSize.Regular) }
             }
         }
     }
@@ -153,12 +173,12 @@ private fun RuleLine(label: String, chips: List<BlockChipUi>) {
 private fun AlwaysChip() {
     Box(
         Modifier
-            .height(40.dp)
-            .background(CarftColors.SurfaceRaised, CarftShapes.Chip)
+            .height(48.dp)
+            .background(CarftColors.SurfaceRaised, CarftShapes.Small)
             .padding(horizontal = 16.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text("항상", style = CarftType.Chip, color = CarftColors.TextSecondary)
+        Text("항상", style = CarftType.LabelS, color = CarftColors.TextSecondary)
     }
 }
 

@@ -75,16 +75,18 @@ fun MetricTile(
     emphasized: Boolean = true
 ) {
     Column(modifier = modifier.padding(horizontal = 16.dp, vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(label, style = CarftType.Caption, color = CarftColors.TextTertiary)
+        Text(label, style = CarftType.Caption, color = CarftColors.TextTertiary, maxLines = 1, softWrap = false)
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
                 value,
                 style = if (unit != null) CarftType.Display else CarftType.Metric,
-                color = if (emphasized) CarftColors.TextPrimary else CarftColors.TextSecondary
+                color = if (emphasized) CarftColors.TextPrimary else CarftColors.TextSecondary,
+                maxLines = 1,
+                softWrap = false
             )
             if (unit != null) Text(unit, style = CarftType.TitleS, color = CarftColors.TextSecondary)
         }
-        if (caption != null) Text(caption, style = CarftType.LabelS, color = CarftColors.Info)
+        if (caption != null) Text(caption, style = CarftType.LabelS, color = CarftColors.Info, maxLines = 1, softWrap = false)
     }
 }
 
