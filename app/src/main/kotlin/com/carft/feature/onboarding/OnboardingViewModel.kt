@@ -5,7 +5,8 @@ import com.carft.app.AppContainer
 import com.carft.designsystem.component.BlockKind
 import com.carft.designsystem.icon.CarftIcon
 import com.carft.domain.model.SampleOptions
-import com.carft.ui.model.toUi
+import com.carft.ui.model.BlockChipUi
+import com.carft.ui.model.RuleUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +24,15 @@ class OnboardingViewModel(private val container: AppContainer) : ViewModel() {
                 LegendUi(BlockKind.Action, CarftIcon.Fan, "무엇을 할까요")
             ),
             exampleName = example.name,
-            exampleRule = example.rule.toUi(),
+            // 온보딩 예시는 설명용 그림이라 Figma(11:663) 문구 그대로 고정한다
+            exampleRule = RuleUi(
+                situation = listOf(BlockChipUi("뒷좌석 벨트를 매면", BlockKind.Situation, CarftIcon.Belt)),
+                conditions = listOf(BlockChipUi("실내 10°C 이하이면", BlockKind.Condition, CarftIcon.Thermo)),
+                actions = listOf(
+                    BlockChipUi("공조 24°C", BlockKind.Action, CarftIcon.Fan),
+                    BlockChipUi("열선 3단", BlockKind.Action, CarftIcon.Heat)
+                )
+            ),
             exampleVoice = "“하린이가 탔어요. 히터를 켰어요.”",
             notices = listOf(
                 NoticeUi(CarftIcon.Eye, "차 상태를 읽어요", "벨트 · 좌석 · 실내 온도 · 와이퍼를 확인해 상황이 생겼는지 봐요"),
