@@ -1,4 +1,4 @@
-package com.carft.ui.screen
+package com.carft.feature.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.carft.domain.model.Option
 import com.carft.domain.model.VehicleState
-import com.carft.ui.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(

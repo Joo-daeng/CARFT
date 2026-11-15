@@ -74,6 +74,10 @@ class PleosVehicle(context: Context) {
         _state.update { it.copy(isDriving = isDriving) }
     }
 
+    fun simulate(transform: (VehicleState) -> VehicleState) {
+        _state.update(transform)
+    }
+
     private fun occupancyListener(name: String, onValue: (Boolean?) -> Unit) = object : SeatOccupancyListener {
         override fun onSeatOccupancyUpdated(occupancy: Boolean?) {
             Log.d(TAG, "occupancy[$name]=$occupancy")

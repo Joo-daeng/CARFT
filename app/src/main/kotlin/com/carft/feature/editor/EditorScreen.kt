@@ -1,4 +1,4 @@
-package com.carft.ui.screen
+package com.carft.feature.editor
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carft.domain.model.*
-import com.carft.ui.viewmodel.EditorViewModel
 
 @Composable
 fun EditorScreen(

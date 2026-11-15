@@ -1,4 +1,4 @@
-package com.carft.ui.screen
+package com.carft.feature.simulation
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carft.domain.model.ExecutionResult
 import com.carft.domain.model.Option
-import com.carft.ui.viewmodel.PreviewViewModel
 
 @Composable
 fun PreviewScreen(

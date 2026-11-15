@@ -1,4 +1,4 @@
-package com.carft.ui.viewmodel
+package com.carft.feature.editor
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

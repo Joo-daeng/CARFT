@@ -1,5 +1,8 @@
 package com.carft.runtime
 
+import com.carft.data.HistoryRepository
+import com.carft.data.OptionRepository
+import com.carft.data.SettingsRepository
 import com.carft.domain.model.ExecutionRecord
 import com.carft.domain.model.ExecutionResult
 import com.carft.domain.model.Option
@@ -8,46 +11,35 @@ import com.carft.domain.model.VehicleState
 import com.carft.domain.rule.RuleEngine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 class OptionRunner(
     private val scope: CoroutineScope,
     private val state: StateFlow<VehicleState>,
-    private val engine: RuleEngine
+    private val engine: RuleEngine,
+    private val options: OptionRepository,
+    private val history: HistoryRepository,
+    private val settings: SettingsRepository
 ) {
-    private var options: List<Option> = emptyList()
-
-    private val _records = MutableStateFlow<List<ExecutionRecord>>(emptyList())
-    val records: StateFlow<List<ExecutionRecord>> = _records.asStateFlow()
-
     private val _events = MutableSharedFlow<ExecutionRecord>(extraBufferCapacity = 8)
     val events: SharedFlow<ExecutionRecord> = _events.asSharedFlow()
-
-    var watching: Boolean = true
 
     fun start() {
         scope.launch {
             var previous = state.value
             state.collect { current ->
-                if (watching) {
-                    options.filter { it.isEnabled && fired(it.rule.trigger, previous, current) }
+                if (settings.settings.value.watching) {
+                    options.options.value.filter { it.isEnabled && fired(it.rule.trigger, previous, current) }
                         .sortedBy { it.priority }
                         .forEach { run(it, current) }
                 }
                 previous = current
             }
         }
-    }
-
-    fun setOptions(list: List<Option>) {
-        options = list
     }
 
     fun runNow(option: Option) {
@@ -65,7 +57,7 @@ class OptionRunner(
             triggeredAt = System.currentTimeMillis(),
             result = result
         )
-        _records.update { listOf(record) + it }
+        history.add(record)
         _events.emit(record)
     }
 
