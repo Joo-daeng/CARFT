@@ -76,6 +76,7 @@ object Validator {
         a is TriggerBlock.SeatOccupied && b is TriggerBlock.SeatOccupied -> a.seat == b.seat
         a is TriggerBlock.SeatBeltBuckled && b is TriggerBlock.SeatBeltBuckled -> a.seat == b.seat
         a is TriggerBlock.WiperOn && b is TriggerBlock.WiperOn -> true
+        a is TriggerBlock.TimeOfDay && b is TriggerBlock.TimeOfDay -> a.hour == b.hour && a.minute == b.minute
         a is TriggerBlock.TemperatureThreshold && b is TriggerBlock.TemperatureThreshold -> a.threshold == b.threshold
         else -> false
     }

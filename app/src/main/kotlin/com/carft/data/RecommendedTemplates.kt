@@ -47,11 +47,11 @@ object RecommendedTemplates {
             id = "school-run",
             tag = "가족",
             popular = false,
-            description = "뒷좌석에 아이가 타면 안내하고 조명을 켜요",
+            description = "아침 정한 시각에 조명과 음성으로 출발을 알려요",
             option = Option(
                 name = "등원 준비",
                 rule = Rule(
-                    trigger = TriggerBlock.SeatBeltBuckled(seat = "rearRight"),
+                    trigger = TriggerBlock.TimeOfDay(hour = 7, minute = 30),
                     actions = listOf(
                         ActionBlock.SetAmbientLight(color = "orange"),
                         ActionBlock.PlayTextToSpeech(text = "등원 준비 완료. 출발할게요.", requiresStationary = true)

@@ -37,6 +37,7 @@ fun Block.toChip(): BlockChipUi = when (this) {
     is TriggerBlock.SeatBeltBuckled -> BlockChipUi("${seatLabel(seat)} 벨트를 매면", BlockKind.Situation, CarftIcon.Belt)
     is TriggerBlock.TemperatureThreshold -> BlockChipUi("실내 ${threshold.toInt()}°C 이하가 되면", BlockKind.Situation, CarftIcon.Thermo)
     is TriggerBlock.WiperOn -> BlockChipUi("와이퍼가 켜지면", BlockKind.Situation, CarftIcon.Wiper)
+    is TriggerBlock.TimeOfDay -> BlockChipUi(displayName(), BlockKind.Situation, CarftIcon.Clock)
     is ConditionBlock.IsSeated -> BlockChipUi("${seatLabel(seat)}에 사람이 있으면", BlockKind.Condition, CarftIcon.Seat)
     is ConditionBlock.TemperatureRange -> BlockChipUi(temperatureText(minTemp, maxTemp), BlockKind.Condition, CarftIcon.Thermo)
     is ConditionBlock.IsDay -> BlockChipUi("아침 ${hour}시", BlockKind.Condition, CarftIcon.Clock)

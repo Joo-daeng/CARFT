@@ -38,6 +38,7 @@ fun BlockPropertySheet(block: Block, onChange: (Block) -> Unit, onRemove: () -> 
             is TriggerBlock.SeatOccupied -> SeatPicker(block.seat) { onChange(block.copy(seat = it)) }
             is TriggerBlock.TemperatureThreshold -> Stepper("기준 온도", "${block.threshold.toInt()}°C",
                 { onChange(block.copy(threshold = block.threshold - 1)) }, { onChange(block.copy(threshold = block.threshold + 1)) })
+            is TriggerBlock.TimeOfDay -> TimeWheelEditor(block.hour, block.minute) { h, m -> onChange(block.copy(hour = h, minute = m)) }
             is ConditionBlock.IsSeated -> SeatPicker(block.seat) { onChange(block.copy(seat = it)) }
             is ConditionBlock.TemperatureRange -> Stepper("실내 온도 이하", "${block.maxTemp.toInt()}°C",
                 { onChange(block.copy(maxTemp = block.maxTemp - 1)) }, { onChange(block.copy(maxTemp = block.maxTemp + 1)) })

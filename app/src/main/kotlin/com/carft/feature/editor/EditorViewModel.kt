@@ -30,6 +30,7 @@ val PALETTE = listOf(
     PaletteItem(BoxTab.Situation, "좌석에 앉으면", CarftIcon.Seat) { TriggerBlock.SeatOccupied(seat = "driver") },
     PaletteItem(BoxTab.Situation, "와이퍼가 켜지면", CarftIcon.Wiper) { TriggerBlock.WiperOn() },
     PaletteItem(BoxTab.Situation, "실내 온도가 떨어지면", CarftIcon.Thermo) { TriggerBlock.TemperatureThreshold(threshold = 10f) },
+    PaletteItem(BoxTab.Situation, "정한 시각이 되면", CarftIcon.Clock) { TriggerBlock.TimeOfDay(hour = 7, minute = 30) },
     PaletteItem(BoxTab.Condition, "실내 온도가 ○°C 이하", CarftIcon.Thermo) { ConditionBlock.TemperatureRange(minTemp = -40f, maxTemp = 10f) },
     PaletteItem(BoxTab.Condition, "좌석에 사람이 있으면", CarftIcon.Seat) { ConditionBlock.IsSeated(seat = "rearRight") },
     PaletteItem(BoxTab.Condition, "아침 시간이면", CarftIcon.Clock) { ConditionBlock.IsDay(hour = 7) },

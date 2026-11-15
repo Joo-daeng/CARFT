@@ -22,7 +22,7 @@ class DemoPanelViewModel(private val container: AppContainer) : ViewModel() {
                 if (car.rearRightBeltBuckled == true) add(DemoSituation.RearBelt)
                 if (car.driverSeatOccupied == true) add(DemoSituation.DriverSeat)
                 if (car.wiperOn == true) add(DemoSituation.Wiper)
-                if (car.hour == 7) add(DemoSituation.Morning)
+                if (car.hour == MORNING_HOUR && car.minute == MORNING_MINUTE) add(DemoSituation.Morning)
             }
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, DemoPanelUiState())
@@ -39,7 +39,7 @@ class DemoPanelViewModel(private val container: AppContainer) : ViewModel() {
 
     fun selectTime(preset: TimePreset) {
         local.update { it.copy(time = preset) }
-        vehicle.simulate { it.copy(hour = preset.hour) }
+        vehicle.simulate { it.copy(hour = preset.hour, minute = preset.minute) }
     }
 
     fun toggle(situation: DemoSituation) = vehicle.simulate {
@@ -47,11 +47,20 @@ class DemoPanelViewModel(private val container: AppContainer) : ViewModel() {
             DemoSituation.RearBelt -> it.copy(rearRightBeltBuckled = it.rearRightBeltBuckled != true, rearRightSeatOccupied = true)
             DemoSituation.DriverSeat -> it.copy(driverSeatOccupied = it.driverSeatOccupied != true)
             DemoSituation.Wiper -> it.copy(wiperOn = it.wiperOn != true)
-            DemoSituation.Morning -> it.copy(hour = if (it.hour == 7) local.value.time.hour else 7)
+            DemoSituation.Morning -> if (it.hour == MORNING_HOUR && it.minute == MORNING_MINUTE) {
+                it.copy(hour = local.value.time.hour, minute = local.value.time.minute)
+            } else {
+                it.copy(hour = MORNING_HOUR, minute = MORNING_MINUTE)
+            }
         }
     }
 
     fun resetSituations() = vehicle.simulate {
-        it.copy(rearRightBeltBuckled = false, driverSeatOccupied = false, wiperOn = false, hour = local.value.time.hour)
+        it.copy(rearRightBeltBuckled = false, driverSeatOccupied = false, wiperOn = false, hour = local.value.time.hour, minute = local.value.time.minute)
+    }
+
+    private companion object {
+        const val MORNING_HOUR = 7
+        const val MORNING_MINUTE = 30
     }
 }

@@ -2,7 +2,10 @@ package com.carft.feature.demopanel
 
 import com.carft.designsystem.icon.CarftIcon
 
-enum class TimePreset(val label: String, val hour: Int) { WeekdayMorning("평일 아침 08:10", 8), WeekendAfternoon("주말 오후 14:00", 14) }
+enum class TimePreset(val label: String, val hour: Int, val minute: Int) {
+    WeekdayMorning("평일 아침 08:10", 8, 10),
+    WeekendAfternoon("주말 오후 14:00", 14, 0)
+}
 
 enum class DemoSituation(val label: String, val icon: CarftIcon) {
     RearBelt("뒷좌석 벨트 매기", CarftIcon.Belt),
