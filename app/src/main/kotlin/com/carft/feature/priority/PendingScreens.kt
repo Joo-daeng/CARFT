@@ -4,9 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.carft.app.carftViewModel
-import com.carft.designsystem.component.CarftScreen
-import com.carft.designsystem.component.CarftTopBar
-import com.carft.ui.component.ScreenPlaceholder
 
 @Composable
 fun PriorityRoute(onBack: () -> Unit) {
@@ -16,8 +13,8 @@ fun PriorityRoute(onBack: () -> Unit) {
 }
 
 @Composable
-fun ConflictRoute(onBack: () -> Unit) {
-    CarftScreen(topBar = { CarftTopBar("충돌 해결", subtitle = "두 옵션이 같은 동작을 다르게 바꾸려 했어요", onBack = onBack) }) {
-        ScreenPlaceholder("18:1328")
-    }
+fun ConflictRoute(onBack: () -> Unit, onOpenPriority: () -> Unit, onHome: () -> Unit) {
+    val viewModel = carftViewModel { ConflictViewModel(it) }
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    ConflictScreen(state = state, onBack = onBack, onResolve = viewModel::resolve, onOpenPriority = onOpenPriority, onHome = onHome)
 }

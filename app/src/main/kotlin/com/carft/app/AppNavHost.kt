@@ -110,7 +110,13 @@ fun AppNavHost(
             SimulationRoute(optionId = entry.arguments?.getString("optionId").orEmpty(), onClose = back)
         }
         composable(Routes.PRIORITY) { PriorityRoute(onBack = back) }
-        composable(Routes.CONFLICT) { ConflictRoute(onBack = back) }
+        composable(Routes.CONFLICT) {
+            ConflictRoute(
+                onBack = back,
+                onOpenPriority = { navController.navigate(Routes.PRIORITY) { popUpTo(Routes.HOME) } },
+                onHome = goHome
+            )
+        }
         composable(Routes.RECOMMEND) {
             RecommendRoute(onBack = back, onImport = { id ->
                 RecommendedTemplates.find(id)?.let {
