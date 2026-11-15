@@ -8,13 +8,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.hyundai.carlego.designsystem.theme.CarftTheme
 import com.hyundai.carlego.ui.screen.MainApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CarLegoTheme {
+            CarftTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -24,11 +25,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
-
-@Composable
-fun CarLegoTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        content = content
-    )
 }

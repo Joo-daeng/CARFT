@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "hyundai-pleos"
 include(":app")
+include(":core:designsystem")
