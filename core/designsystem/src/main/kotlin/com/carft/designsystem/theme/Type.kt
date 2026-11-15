@@ -36,6 +36,7 @@ object CarftType {
     val Display = style(48, 700, 1.1f)
     val Metric = style(40, 700, 1.2f)
     val Brand = style(36, 700)
+    val Title = style(36, 700)
     val TitleL = style(30, 700)
     val TitleM = style(28, 700)
     val CardTitle = style(26, 700)
