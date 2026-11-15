@@ -143,11 +143,15 @@ fun EditorScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             listOf(
-                "트리거" to { viewModel.addBlock(TriggerBlock.Manual()) },
+                "상황: 버튼" to { viewModel.addBlock(TriggerBlock.Manual()) },
+                "상황: 뒷좌석 벨트" to { viewModel.addBlock(TriggerBlock.SeatBeltBuckled(seat = "rearRight")) },
+                "상황: 운전석 착좌" to { viewModel.addBlock(TriggerBlock.SeatOccupied(seat = "driver")) },
+                "상황: 와이퍼" to { viewModel.addBlock(TriggerBlock.WiperOn()) },
                 "조건: 온도" to { viewModel.addBlock(ConditionBlock.TemperatureRange()) },
                 "조건: 착좌" to { viewModel.addBlock(ConditionBlock.IsSeated()) },
                 "동작: 공조" to { viewModel.addBlock(ActionBlock.SetHvacTemperature()) },
                 "동작: 열선" to { viewModel.addBlock(ActionBlock.SetSeatHeat()) },
+                "동작: 조명" to { viewModel.addBlock(ActionBlock.SetAmbientLight()) },
                 "동작: 음성" to { viewModel.addBlock(ActionBlock.PlayTextToSpeech()) }
             ).forEach { (label, action) ->
                 Button(

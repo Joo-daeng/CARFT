@@ -32,6 +32,10 @@ sealed class TriggerBlock : Block() {
     ) : TriggerBlock() {
         override fun displayName() = "실내 온도가 ${threshold.toInt()}°C 이하"
     }
+
+    data class WiperOn(override val id: String = UUID.randomUUID().toString()) : TriggerBlock() {
+        override fun displayName() = "와이퍼가 켜지면"
+    }
 }
 
 sealed class ConditionBlock : Block() {

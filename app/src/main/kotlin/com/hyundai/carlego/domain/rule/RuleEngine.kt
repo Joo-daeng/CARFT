@@ -68,6 +68,7 @@ class RuleEngine(
             is TriggerBlock.TemperatureThreshold -> {
                 (state.interiorTemp ?: Float.MAX_VALUE) <= trigger.threshold
             }
+            is TriggerBlock.WiperOn -> state.wiperOn ?: false
         }
     }
 
