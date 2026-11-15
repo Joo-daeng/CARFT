@@ -16,6 +16,7 @@ import com.carft.designsystem.R
 enum class CarftIcon(@DrawableRes val res: Int) {
     Arrow(R.drawable.ic_carft_arrow),
     Belt(R.drawable.ic_carft_belt),
+    Box(R.drawable.ic_carft_box),
     Bulb(R.drawable.ic_carft_bulb),
     Calendar(R.drawable.ic_carft_calendar),
     Car(R.drawable.ic_carft_car),
@@ -36,10 +37,14 @@ enum class CarftIcon(@DrawableRes val res: Int) {
     Plus(R.drawable.ic_carft_plus),
     Power(R.drawable.ic_carft_power),
     Seat(R.drawable.ic_carft_seat),
+    Sliders(R.drawable.ic_carft_sliders),
     Sparkle(R.drawable.ic_carft_sparkle),
     Speaker(R.drawable.ic_carft_speaker),
+    Star(R.drawable.ic_carft_star),
     Steering(R.drawable.ic_carft_steering),
     Thermo(R.drawable.ic_carft_thermo),
+    Trash(R.drawable.ic_carft_trash),
+    Undo(R.drawable.ic_carft_undo),
     Warning(R.drawable.ic_carft_warning),
     Wiper(R.drawable.ic_carft_wiper)
 }
