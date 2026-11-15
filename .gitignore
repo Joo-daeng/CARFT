@@ -1,0 +1,27 @@
+# Gradle
+.gradle
+build/
+*.hprof
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+*.zip
+
+# Android
+.idea/
+*.iml
+*.apk
+!apk/*.apk
+local.properties
+.classpath
+.project
+.cproject
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+*.swp
+*.swo
+*~
+.vscode/
