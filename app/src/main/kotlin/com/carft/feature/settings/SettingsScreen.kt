@@ -92,12 +92,12 @@ fun SettingsScreen(
                         )
                     }
                     HorizontalDivider()
-                    SettingRow(CarftIcon.Sparkle, "튜토리얼 다시 보기", "첫 옵션 만들기 안내를 처음부터 다시 봐요") {
-                        CarftButton("다시 보기", onReplayTutorial, Modifier.height(60.dp).width(192.dp), style = CarftButtonStyle.Secondary, size = CarftButtonSize.Small)
+                    SettingRow(CarftIcon.Box, "튜토리얼 다시 보기", "첫 옵션 만들기 안내를 처음부터 다시 봐요") {
+                        CarftButton("다시 보기", onReplayTutorial, Modifier.height(60.dp).width(192.dp), style = CarftButtonStyle.Secondary, size = CarftButtonSize.Small, icon = CarftIcon.Undo)
                     }
                     HorizontalDivider()
                     SettingRow(CarftIcon.History, "처음 설치한 상태로", "저장한 옵션과 기록을 모두 지워요 · 시연용") {
-                        CarftButton("되돌리기", { confirmReset = true }, Modifier.height(60.dp).width(192.dp), style = CarftButtonStyle.DangerSoft, size = CarftButtonSize.Small)
+                        CarftButton("되돌리기", { confirmReset = true }, Modifier.height(60.dp).width(192.dp), style = CarftButtonStyle.DangerSoft, size = CarftButtonSize.Small, icon = CarftIcon.Trash)
                     }
                 }
                 AppInfoCard(state, Modifier.width(616.dp))

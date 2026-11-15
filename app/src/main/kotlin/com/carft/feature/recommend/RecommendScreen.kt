@@ -115,7 +115,7 @@ private fun PopularChip() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        CarftIconView(CarftIcon.Sparkle, size = 18.dp, tint = CarftColors.Situation)
+        CarftIconView(CarftIcon.Star, size = 18.dp, tint = CarftColors.Situation)
         Text("인기", style = CarftType.Chip, color = CarftColors.Situation)
     }
 }

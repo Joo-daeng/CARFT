@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.carft.designsystem.icon.CarftIcon
 import com.carft.designsystem.icon.CarftIconView
 import com.carft.designsystem.theme.CarftColors
 import com.carft.designsystem.theme.CarftShapes
@@ -104,6 +105,7 @@ fun DemoPanel(
 @Composable
 private fun Header(onClose: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+        CarftIconView(CarftIcon.Sliders, size = 20.dp, tint = CarftColors.Demo)
         Text("시연 패널", style = CarftType.TitleS, color = CarftColors.Demo)
         Box(
             Modifier
