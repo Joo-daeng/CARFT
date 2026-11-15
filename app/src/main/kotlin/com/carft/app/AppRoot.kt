@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.carft.appContainer
-import com.carft.data.RecommendedTemplates
 import com.carft.domain.model.ExecutionRecord
 import com.carft.feature.demopanel.DemoPanelRoute
 import com.carft.feature.demopanel.DemoPanelViewModel
@@ -23,7 +22,6 @@ import com.carft.feature.onboarding.StartPoint
 import com.carft.ui.component.ExecutionToast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import java.util.UUID
 
 @Composable
 fun AppRoot() {
@@ -45,9 +43,6 @@ fun AppRoot() {
         AppNavHost(
             navController = navController,
             startDestination = start,
-            onImportTemplate = { id ->
-                RecommendedTemplates.find(id)?.let { container.options.upsert(it.option.copy(id = UUID.randomUUID().toString())) }
-            },
             onOpenDemoPanel = demoPanel::show
         )
         toast?.let { record ->
