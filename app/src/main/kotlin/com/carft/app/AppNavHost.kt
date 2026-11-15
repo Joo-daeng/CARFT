@@ -53,7 +53,13 @@ fun AppNavHost(
             )
         }
         composable(Routes.DETAIL) { entry ->
-            OptionDetailRoute(optionId = entry.arguments?.getString("optionId").orEmpty(), onBack = back)
+            OptionDetailRoute(
+                optionId = entry.arguments?.getString("optionId").orEmpty(),
+                onBack = back,
+                onEdit = { navController.navigate(Routes.EDITOR) },
+                onSimulate = { navController.navigate(Routes.simulation(it)) },
+                onPriority = { navController.navigate(Routes.PRIORITY) }
+            )
         }
         composable(Routes.EDITOR) { EditorRoute(onDone = goHome, onCancel = back) }
         composable(Routes.SIMULATION) { entry ->
