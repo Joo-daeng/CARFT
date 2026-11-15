@@ -88,11 +88,11 @@ private fun RankRow(row: PriorityRowUi, canUp: Boolean, canDown: Boolean, onUp: 
             .alpha(if (row.enabled) 1f else 0.55f)
     ) {
     Box(Modifier.matchParentSize()) {
-        Box(Modifier.width(120.dp).fillMaxHeight().background(CarftColors.SurfaceRaised))
+        Box(Modifier.width(96.dp).fillMaxHeight().background(CarftColors.SurfaceRaised))
     }
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Column(
-            Modifier.width(120.dp),
+            Modifier.width(96.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

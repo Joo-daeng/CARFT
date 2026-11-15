@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,15 +27,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.carft.designsystem.component.BlockChip
+import com.carft.designsystem.component.BlockChipSize
 import com.carft.designsystem.component.BlockKind
 import com.carft.designsystem.component.CardHeader
 import com.carft.designsystem.component.CarftBrandBar
 import com.carft.designsystem.component.CarftButton
+import com.carft.designsystem.component.CarftButtonSize
 import com.carft.designsystem.component.CarftButtonStyle
 import com.carft.designsystem.component.CarftCard
 import com.carft.designsystem.component.CarftIconButton
@@ -86,8 +98,7 @@ fun HomeScreen(
                 Modifier.weight(1f).fillMaxHeight().verticalScroll(rememberScrollState()).padding(bottom = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                ListTitle(state.enabledCount, state.options.size)
-                if (state.options.isEmpty()) EmptyOptions(onCreate)
+                if (state.options.isEmpty()) EmptyOptions(onCreate, onOpenRecommend) else ListTitle(state.enabledCount, state.options.size)
                 state.options.forEach { card ->
                     OptionCard(card, onClick = { onOpenDetail(card.id) }, onToggle = { onToggle(card.id, it) }, onMore = { onOpenMenu(card.id) })
                 }
@@ -175,11 +186,42 @@ private fun OptionCard(card: OptionCardUi, onClick: () -> Unit, onToggle: (Boole
 }
 
 @Composable
-private fun EmptyOptions(onCreate: () -> Unit) {
-    CarftCard(Modifier.fillMaxWidth(), padding = 40.dp) {
-        Text("아직 만든 옵션이 없어요", style = CarftType.CardTitle, color = CarftColors.TextPrimary)
-        Text("블록을 끼워 첫 옵션을 만들거나 추천 옵션을 가져와 보세요.", style = CarftType.BodyM, color = CarftColors.TextSecondary)
-        CarftButton("새 옵션 만들기", onCreate, icon = CarftIcon.Plus)
+private fun EmptyOptions(onCreate: () -> Unit, onOpenRecommend: () -> Unit) {
+    val dash = CarftColors.StrokeStrong
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .heightIn(min = 543.dp)
+            .drawBehind {
+                val stroke = 2.dp.toPx()
+                drawRoundRect(
+                    color = dash,
+                    topLeft = Offset(stroke / 2, stroke / 2),
+                    size = Size(size.width - stroke, size.height - stroke),
+                    cornerRadius = CornerRadius(28.dp.toPx()),
+                    style = Stroke(width = stroke, pathEffect = PathEffect.dashPathEffect(floatArrayOf(12.dp.toPx(), 10.dp.toPx())))
+                )
+            }
+            .padding(horizontal = 40.dp, vertical = 56.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
+    ) {
+        Box(Modifier.size(width = 520.dp, height = 170.dp)) {
+            BlockChip("벨트를 매면", BlockKind.Situation, Modifier.offset(20.dp, 7.dp).rotate(4f), icon = CarftIcon.Belt, size = BlockChipSize.Large)
+            BlockChip("10°C 이하", BlockKind.Condition, Modifier.offset(187.dp, 70.dp).rotate(-3f), icon = CarftIcon.Thermo, size = BlockChipSize.Large)
+            BlockChip("열선 3단", BlockKind.Action, Modifier.offset(330.dp, 10.dp).rotate(5f), icon = CarftIcon.Heat, size = BlockChipSize.Large)
+        }
+        Text("아직 만든 옵션이 없어요", style = CarftType.Title.copy(fontSize = 32.sp), color = CarftColors.TextPrimary)
+        Text(
+            "상황 · 조건 · 동작 블록을 끼우면 나만의 차량 옵션이 돼요.\n처음이라면 추천 옵션에서 골라 시작해도 좋아요.",
+            style = CarftType.BodyM.copy(fontWeight = FontWeight.Normal),
+            color = CarftColors.TextSecondary,
+            textAlign = TextAlign.Center
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            CarftButton("새 옵션 만들기", onCreate, size = CarftButtonSize.Large, icon = CarftIcon.Plus)
+            CarftButton("추천 옵션 둘러보기", onOpenRecommend, style = CarftButtonStyle.Secondary, size = CarftButtonSize.Large, icon = CarftIcon.Sparkle)
+        }
     }
 }
 
@@ -189,18 +231,17 @@ private fun CarStateCard(car: CarStateUi) {
         CardHeader("지금 차 상태", icon = CarftIcon.Car) {
             StatusPill(if (car.driving) "주행 중" else "정차 중", if (car.driving) StatusTone.Warning else StatusTone.Neutral, icon = if (car.driving) CarftIcon.Car else CarftIcon.Pause)
         }
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.SpaceBetween) {
             MetricTile(
                 "실내 온도",
                 car.interiorTemp ?: "모름",
-                Modifier.weight(1.1f),
                 unit = car.interiorTemp?.let { "°C" },
                 caption = car.tempCaption
             )
             VerticalDivider()
-            MetricTile("뒷좌석 벨트", car.rearBelt, Modifier.weight(1f), emphasized = car.rearBelt == "맴")
+            MetricTile("뒷좌석 벨트", car.rearBelt, emphasized = car.rearBelt == "맴")
             VerticalDivider()
-            MetricTile("운전석", car.driverSeat, Modifier.weight(1.1f), emphasized = car.driverSeat == "앉음")
+            MetricTile("운전석", car.driverSeat, emphasized = car.driverSeat == "앉음")
         }
         if (car.applied.isNotEmpty()) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -248,7 +289,7 @@ private fun RecentCard(recent: RecentRunUi?, onOpenHistory: () -> Unit) {
             Text("전체 보기", style = CarftType.LabelS, color = CarftColors.Info, modifier = Modifier.clickable(onClick = onOpenHistory))
         }
         if (recent == null) {
-            Text("아직 실행한 옵션이 없어요", style = CarftType.BodyS, color = CarftColors.TextTertiary)
+            Text("아직 실행된 옵션이 없어요. 시연 패널에서 상황을 만들어 보세요.", style = CarftType.BodyS, color = CarftColors.TextTertiary)
         } else {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Box(

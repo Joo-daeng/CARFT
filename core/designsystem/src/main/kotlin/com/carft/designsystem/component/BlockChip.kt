@@ -33,6 +33,7 @@ enum class BlockKind(val color: Color, val content: Color, val label: String) {
 
 enum class BlockChipSize(val height: Dp, val horizontal: Dp, val icon: Dp, val text: TextStyle) {
     Small(40.dp, 16.dp, 18.dp, CarftType.Chip),
+    Regular(48.dp, 16.dp, 22.dp, CarftType.LabelS),
     Medium(52.dp, 20.dp, 24.dp, CarftType.Label),
     Large(68.dp, 24.dp, 31.dp, CarftType.Button)
 }
@@ -58,7 +59,7 @@ fun BlockChip(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (icon != null) CarftIconView(icon, size = size.icon, tint = kind.content)
-        Text(text, style = size.text, color = kind.content)
+        Text(text, style = size.text, color = kind.content, maxLines = 1, softWrap = false)
         if (kind == BlockKind.StopOnlyAction) {
             CarftIconView(CarftIcon.Pause, size = 14.dp, tint = kind.content)
         }
