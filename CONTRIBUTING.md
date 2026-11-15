@@ -29,3 +29,12 @@ git config core.hooksPath .githooks
 타입: `feat` `fix` `refactor` `chore` `style` `docs` `test` `perf` `ci`
 
 PR 제목도 같은 형식이다. Squash merge 시 PR 제목이 `main` 커밋 메시지가 된다.
+
+## PR 자동 설정
+
+PR을 열면 자동으로 처리된다.
+
+- 리뷰어: `.github/CODEOWNERS`의 담당자 중 PR 작성자를 뺀 사람
+- 라벨: PR 제목의 타입과 같은 라벨 (`feat:` → `feat`). 제목을 고치면 라벨도 바뀐다
+- 담당자: PR 작성자
+- PR 제목이 형식에 맞지 않으면 `PR 자동 설정` 체크가 실패한다
