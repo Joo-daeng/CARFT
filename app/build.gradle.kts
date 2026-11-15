@@ -47,6 +47,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:designsystem"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
 
