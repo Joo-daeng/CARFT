@@ -10,7 +10,7 @@ sealed class ExecutionResult {
         val reason: String = "주행 중 일부만 실행"
     ) : ExecutionResult() {
         val successCount = actions.count { it is ActionExecutionResult.Success }
-        override fun toString() = "⚠️ 일부만 실행 ($successCount/${actions.size})"
+        override fun toString() = "⚠️ 일부만 실행 ($successCount/${actions.size}) · $reason"
     }
 
     data class NotExecuted(val reason: String) : ExecutionResult() {

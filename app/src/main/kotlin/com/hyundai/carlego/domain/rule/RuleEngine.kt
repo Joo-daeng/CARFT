@@ -126,6 +126,16 @@ class RuleEngine(
 
         val successCount = results.count { it is ActionExecutionResult.Success }
         val deferredCount = results.count { it is ActionExecutionResult.Deferred }
+        val failed = results.filterIsInstance<ActionExecutionResult.Conflict>()
+
+        if (failed.isNotEmpty()) {
+            val reasons = failed.joinToString(", ") { it.reason }
+            return if (successCount == 0) {
+                ExecutionResult.NotExecuted("동작 실패: $reasons")
+            } else {
+                ExecutionResult.PartialSuccess(results, "${failed.size}개 실패: $reasons")
+            }
+        }
 
         return when {
             deferredCount > 0 && successCount == 0 -> {
