@@ -2,7 +2,7 @@ package com.carft.feature.recommend
 
 import androidx.lifecycle.ViewModel
 import com.carft.data.RecommendedTemplates
-import com.carft.domain.model.ActionBlock
+import com.carft.domain.model.isStopOnly
 import com.carft.ui.model.toUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,17 +19,10 @@ class RecommendViewModel : ViewModel() {
                     title = t.option.name,
                     description = t.description,
                     rule = t.option.rule.toUi(),
-                    runsWhileDriving = t.option.rule.actions.none { it.stopOnly() }
+                    runsWhileDriving = t.option.rule.actions.none { it.isStopOnly() }
                 )
             }
         )
     )
     val state: StateFlow<RecommendUiState> = _state.asStateFlow()
-
-    private fun ActionBlock.stopOnly() = when (this) {
-        is ActionBlock.SetHvacTemperature -> requiresStationary
-        is ActionBlock.SetSeatHeat -> requiresStationary
-        is ActionBlock.SetAmbientLight -> requiresStationary
-        is ActionBlock.PlayTextToSpeech -> requiresStationary
-    }
 }

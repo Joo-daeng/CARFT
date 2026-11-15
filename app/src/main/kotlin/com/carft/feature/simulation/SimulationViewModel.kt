@@ -77,7 +77,7 @@ class SimulationViewModel(private val option: Option) : ViewModel() {
 
     fun setTempUnknown() = input.update { it.copy(interiorTemp = null) }
 
-    fun setHour(hour: Int) = input.update { it.copy(hour = hour, minute = if (hour < 12) 10 else 0) }
+    fun setHour(hour: Int) = input.update { it.copy(hour = hour, minute = if (hour < 12) 10 else 0, dayOfWeek = if (hour < 12) 1 else 6) }
 
     fun setWiper(on: Boolean) = input.update { it.copy(wiperOn = on) }
 

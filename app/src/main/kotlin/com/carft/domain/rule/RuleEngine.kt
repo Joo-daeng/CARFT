@@ -106,13 +106,7 @@ class RuleEngine(
 
         for (action in actions) {
             // 주행 제한 확인
-            val requiresStationary = when (action) {
-                is ActionBlock.SetHvacTemperature -> action.requiresStationary
-                is ActionBlock.SetSeatHeat -> action.requiresStationary
-                is ActionBlock.SetAmbientLight -> action.requiresStationary
-                is ActionBlock.PlayTextToSpeech -> action.requiresStationary
-            }
-            if (requiresStationary && state.isDriving) {
+            if (action.isStopOnly() && state.isDriving) {
                 results.add(ActionExecutionResult.Deferred(action.id, "주행 중"))
                 continue
             }

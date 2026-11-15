@@ -70,6 +70,50 @@ sealed class ConditionBlock : Block() {
     ) : ConditionBlock() {
         override fun displayName() = "아침 ${hour}시"
     }
+
+    data class Weekday(
+        override val id: String = UUID.randomUUID().toString(),
+        val days: String = "weekday"
+    ) : ConditionBlock() {
+        override fun displayName() = "요일 · ${weekdayLabel(days)}"
+    }
+
+    data class TimeSlot(
+        override val id: String = UUID.randomUUID().toString(),
+        val slot: String = "morning"
+    ) : ConditionBlock() {
+        override fun displayName() = "시간대 · ${timeSlotLabel(slot)}"
+    }
+
+    data class WiperOff(override val id: String = UUID.randomUUID().toString()) : ConditionBlock() {
+        override fun displayName() = "와이퍼 꺼짐"
+    }
+}
+
+fun weekdayLabel(days: String): String = when (days) {
+    "weekend" -> "주말"
+    "everyday" -> "매일"
+    else -> "평일"
+}
+
+fun weekdayMatches(days: String, dayOfWeek: Int): Boolean = when (days) {
+    "weekend" -> dayOfWeek >= 6
+    "everyday" -> true
+    else -> dayOfWeek in 1..5
+}
+
+fun timeSlotLabel(slot: String): String = when (slot) {
+    "day" -> "낮"
+    "evening" -> "저녁"
+    "night" -> "밤"
+    else -> "아침"
+}
+
+fun timeSlotContains(slot: String, hour: Int): Boolean = when (slot) {
+    "day" -> hour in 10 until 18
+    "evening" -> hour in 18 until 22
+    "night" -> hour >= 22 || hour < 6
+    else -> hour in 6 until 10
 }
 
 sealed class ActionBlock : Block() {
@@ -106,6 +150,28 @@ sealed class ActionBlock : Block() {
     ) : ActionBlock() {
         override fun displayName() = "음성: \"$text\""
     }
+
+    data class SteeringHeat(override val id: String = UUID.randomUUID().toString()) : ActionBlock() {
+        override fun displayName() = "핸들 열선"
+    }
+
+    data class CabinLight(override val id: String = UUID.randomUUID().toString()) : ActionBlock() {
+        override fun displayName() = "실내등 켜기"
+    }
+
+    data class NaviDestination(override val id: String = UUID.randomUUID().toString()) : ActionBlock() {
+        override fun displayName() = "내비 목적지"
+    }
+}
+
+fun ActionBlock.isStopOnly(): Boolean = when (this) {
+    is ActionBlock.SetHvacTemperature -> requiresStationary
+    is ActionBlock.SetSeatHeat -> requiresStationary
+    is ActionBlock.SetAmbientLight -> requiresStationary
+    is ActionBlock.PlayTextToSpeech -> requiresStationary
+    is ActionBlock.SteeringHeat -> false
+    is ActionBlock.CabinLight -> true
+    is ActionBlock.NaviDestination -> true
 }
 
 data class CombinationLogic(

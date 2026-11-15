@@ -57,6 +57,8 @@ fun BlockPanel(block: Block, onChange: (Block) -> Unit, onRemove: () -> Unit, on
             is ConditionBlock.TemperatureRange -> "실내 온도가 몇 도일 때?"
             is ActionBlock.SetHvacTemperature -> "공조를 몇 도로 맞출까요?"
             is ActionBlock.SetSeatHeat -> "운전석 열선을 어떻게 설정할까요?"
+            is ConditionBlock.Weekday -> "어떤 요일에 실행할까요?"
+            is ConditionBlock.TimeSlot -> "어떤 시간대에 실행할까요?"
             else -> if (stopOnly) "정차 중에만 실행할 수 있는 동작입니다." else "따로 설정할 값이 없는 블록이에요."
         },
         description = when (block) {
@@ -65,6 +67,8 @@ fun BlockPanel(block: Block, onChange: (Block) -> Unit, onRemove: () -> Unit, on
             is ConditionBlock.TemperatureRange -> "기준 온도와 이상/이하를 정해요"
             is ActionBlock.SetHvacTemperature -> "실내를 이 온도로 맞춰요. 0.5°C 단위예요."
             is ActionBlock.SetSeatHeat -> "원하는 열선 단계를 선택하세요."
+            is ConditionBlock.Weekday -> "요일 조건을 하나 선택하세요."
+            is ConditionBlock.TimeSlot -> "시간대를 하나 선택하세요."
             else -> if (stopOnly) "주행 중에는 실행되지 않아요. 앱의 안전 규칙에 따라 정차한 뒤 실행되거나 이번에는 건너뛸 수 있어요."
             else "이 블록은 고를 값이 없어요. 필요 없으면 아래에서 삭제할 수 있어요."
         },
@@ -79,6 +83,19 @@ fun BlockPanel(block: Block, onChange: (Block) -> Unit, onRemove: () -> Unit, on
             is ConditionBlock.TemperatureRange -> TemperatureEditor(block, onChange)
             is ActionBlock.SetHvacTemperature -> HvacEditor(block.targetTemp) { onChange(block.copy(targetTemp = it)) }
             is ActionBlock.SetSeatHeat -> HeatEditor(block.level) { onChange(block.copy(level = it)) }
+            is ConditionBlock.Weekday -> {
+                WEEKDAYS.forEach { (key, label, sub) -> OptionRow(label, sub, block.days == key, Modifier.fillMaxWidth()) { onChange(block.copy(days = key)) } }
+                Summary("선택한 요일", WEEKDAYS.first { it.first == block.days }.second)
+            }
+            is ConditionBlock.TimeSlot -> {
+                TIME_SLOTS.chunked(2).forEach { row ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        row.forEach { (key, label, sub) -> OptionRow(label, sub, block.slot == key, Modifier.weight(1f)) { onChange(block.copy(slot = key)) } }
+                    }
+                }
+                val picked = TIME_SLOTS.first { it.first == block.slot }
+                Summary("선택한 시간대", "${picked.second} · ${picked.third}")
+            }
             else -> Unit
         }
     }
@@ -335,5 +352,28 @@ private fun LogicChoice(title: String, sub: String, selected: Boolean, onClick: 
             Text(sub, style = CarftType.BodyS, color = CarftColors.TextSecondary)
         }
         if (selected) Box(Modifier.size(14.dp).background(CarftColors.Logic, CarftShapes.Pill))
+    }
+}
+
+@Composable
+private fun OptionRow(title: String, sub: String, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+    Row(
+        modifier
+            .height(88.dp)
+            .background(if (selected) CarftColors.Info.copy(alpha = 0.18f) else CarftColors.SurfaceRaised, CarftShapes.Small)
+            .border(if (selected) 2.dp else 1.dp, if (selected) CarftColors.Info else CarftColors.Stroke, CarftShapes.Small)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(title, style = CarftType.Label, color = CarftColors.TextPrimary)
+            Text(sub, style = CarftType.Caption, color = CarftColors.TextSecondary)
+        }
+        if (selected) {
+            Box(Modifier.size(24.dp).background(CarftColors.Info, CarftShapes.Pill), contentAlignment = Alignment.Center) {
+                CarftIconView(CarftIcon.Check, size = 16.dp, tint = Color.White)
+            }
+        }
     }
 }

@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.carft.app.AppContainer
 import com.carft.designsystem.component.OptionStatus
-import com.carft.domain.model.ActionBlock
 import com.carft.domain.model.ExecutionResult
+import com.carft.domain.model.isStopOnly
 import com.carft.ui.model.BlockChipUi
 import com.carft.ui.model.toChip
 import com.carft.ui.model.toUi
@@ -48,7 +48,7 @@ class OptionDetailViewModel(private val container: AppContainer, private val opt
         OptionDetailUiState(
             card = OptionCardUi(option.id, option.name, status, option.isEnabled, option.rule.toUi()),
             rank = option.priority,
-            drivingRules = option.rule.actions.map { DrivingRuleUi(it.toChip(), !it.stopOnly()) },
+            drivingRules = option.rule.actions.map { DrivingRuleUi(it.toChip(), !it.isStopOnly()) },
             menuOpen = ui.menuOpen,
             confirmDelete = ui.confirmDelete
         )
@@ -67,13 +67,6 @@ class OptionDetailViewModel(private val container: AppContainer, private val opt
     fun delete() {
         local.update { Local() }
         container.options.delete(optionId)
-    }
-
-    private fun ActionBlock.stopOnly() = when (this) {
-        is ActionBlock.SetHvacTemperature -> requiresStationary
-        is ActionBlock.SetSeatHeat -> requiresStationary
-        is ActionBlock.SetAmbientLight -> requiresStationary
-        is ActionBlock.PlayTextToSpeech -> requiresStationary
     }
 
     private companion object {

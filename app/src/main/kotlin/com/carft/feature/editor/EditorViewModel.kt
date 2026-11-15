@@ -31,9 +31,15 @@ val PALETTE = listOf(
     PaletteItem(BoxTab.Situation, "와이퍼가 켜지면", CarftIcon.Wiper) { TriggerBlock.WiperOn() },
     PaletteItem(BoxTab.Situation, "정한 시각이 되면", CarftIcon.Clock) { TriggerBlock.TimeOfDay(hour = 7, minute = 30) },
     PaletteItem(BoxTab.Condition, "실내 온도가 ○°C", CarftIcon.Thermo) { ConditionBlock.TemperatureRange(minTemp = -40f, maxTemp = 10f) },
+    PaletteItem(BoxTab.Condition, "요일", CarftIcon.Calendar) { ConditionBlock.Weekday(days = "weekday") },
+    PaletteItem(BoxTab.Condition, "시간대", CarftIcon.Clock) { ConditionBlock.TimeSlot(slot = "morning") },
+    PaletteItem(BoxTab.Condition, "와이퍼 꺼짐", CarftIcon.Wiper) { ConditionBlock.WiperOff() },
     PaletteItem(BoxTab.Action, "공조", CarftIcon.Fan) { ActionBlock.SetHvacTemperature(targetTemp = 24f) },
     PaletteItem(BoxTab.Action, "운전석 열선", CarftIcon.Heat) { ActionBlock.SetSeatHeat(seat = "driver", level = 3) },
-    PaletteItem(BoxTab.Action, "음성 안내", CarftIcon.Speaker) { ActionBlock.PlayTextToSpeech(text = "옵션을 실행했어요.") }
+    PaletteItem(BoxTab.Action, "핸들 열선", CarftIcon.Steering) { ActionBlock.SteeringHeat() },
+    PaletteItem(BoxTab.Action, "음성 안내", CarftIcon.Speaker) { ActionBlock.PlayTextToSpeech(text = "옵션을 실행했어요.") },
+    PaletteItem(BoxTab.Action, "실내등 켜기", CarftIcon.Bulb) { ActionBlock.CabinLight() },
+    PaletteItem(BoxTab.Action, "내비 목적지", CarftIcon.Nav) { ActionBlock.NaviDestination() }
 )
 
 const val MAX_CONDITIONS = 3
