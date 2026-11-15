@@ -25,8 +25,8 @@ fun Rule.toUi(): RuleUi = RuleUi(
 )
 
 fun seatLabel(seat: String): String = when (seat) {
-    "rearRight" -> "뒷좌석"
-    "rearLeft" -> "뒷좌석 왼쪽"
+    "rearRight" -> "오른쪽 뒷좌석"
+    "rearLeft" -> "왼쪽 뒷좌석"
     "passenger" -> "조수석"
     else -> "운전석"
 }
