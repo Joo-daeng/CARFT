@@ -132,7 +132,10 @@ class OptionRunner(
             now.interiorTemp?.let { it <= trigger.threshold }
         )
         is TriggerBlock.WiperOn -> rose(before.wiperOn, now.wiperOn)
+        is TriggerBlock.TimeOfDay -> rose(at(before, trigger), at(now, trigger))
     }
+
+    private fun at(s: VehicleState, t: TriggerBlock.TimeOfDay) = s.hour == t.hour && s.minute == t.minute
 
     private fun rose(before: Boolean?, now: Boolean?) = now == true && before == false
 

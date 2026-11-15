@@ -19,8 +19,10 @@ import com.carft.infrastructure.pleos.PleosVehicle
 import com.carft.infrastructure.pleos.PleosVehicleAdapter
 import com.carft.runtime.OptionRunner
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 
 class AppContainer(context: Context, private val scope: CoroutineScope) {
     private val store = PersistentStore(context)
@@ -45,7 +47,19 @@ class AppContainer(context: Context, private val scope: CoroutineScope) {
         scope.launch { settings.settings.drop(1).collect { store.saveSettings(it) } }
         vehicle.start()
         speaker.start()
+        startClock()
         runner.start()
+    }
+
+    private fun startClock() {
+        val now = LocalTime.now()
+        vehicle.simulate { it.copy(hour = now.hour, minute = now.minute) }
+        scope.launch {
+            while (true) {
+                delay(MINUTE_MS - System.currentTimeMillis() % MINUTE_MS)
+                vehicle.simulate { it.nextMinute() }
+            }
+        }
     }
 
     fun resetToFirstRun() {
@@ -58,5 +72,9 @@ class AppContainer(context: Context, private val scope: CoroutineScope) {
         options.reset(SampleOptions.all())
         history.reset(SampleHistory.all())
         settings.update { it.copy(onboardingDone = true) }
+    }
+
+    private companion object {
+        const val MINUTE_MS = 60_000L
     }
 }

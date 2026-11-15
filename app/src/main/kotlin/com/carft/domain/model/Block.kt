@@ -36,7 +36,17 @@ sealed class TriggerBlock : Block() {
     data class WiperOn(override val id: String = UUID.randomUUID().toString()) : TriggerBlock() {
         override fun displayName() = "와이퍼가 켜지면"
     }
+
+    data class TimeOfDay(
+        override val id: String = UUID.randomUUID().toString(),
+        val hour: Int = 7,
+        val minute: Int = 30
+    ) : TriggerBlock() {
+        override fun displayName() = "${clockText(hour, minute)}이 되면"
+    }
 }
+
+fun clockText(hour: Int, minute: Int): String = "%02d:%02d".format(hour, minute)
 
 sealed class ConditionBlock : Block() {
     data class IsSeated(

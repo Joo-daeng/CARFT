@@ -69,6 +69,7 @@ class RuleEngine(
                 (state.interiorTemp ?: Float.MAX_VALUE) <= trigger.threshold
             }
             is TriggerBlock.WiperOn -> state.wiperOn ?: false
+            is TriggerBlock.TimeOfDay -> state.hour == trigger.hour && state.minute == trigger.minute
         }
     }
 

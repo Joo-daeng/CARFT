@@ -77,7 +77,7 @@ class SimulationViewModel(private val option: Option) : ViewModel() {
 
     fun setTempUnknown() = input.update { it.copy(interiorTemp = null) }
 
-    fun setHour(hour: Int) = input.update { it.copy(hour = hour) }
+    fun setHour(hour: Int) = input.update { it.copy(hour = hour, minute = if (hour < 12) 10 else 0) }
 
     fun setWiper(on: Boolean) = input.update { it.copy(wiperOn = on) }
 
@@ -91,6 +91,7 @@ class SimulationViewModel(private val option: Option) : ViewModel() {
         is TriggerBlock.SeatBeltBuckled -> if (t.seat == "rearRight") s.copy(rearRightBeltBuckled = true, rearRightSeatOccupied = true) else s.copy(driverBeltBuckled = true, driverSeatOccupied = true)
         is TriggerBlock.SeatOccupied -> if (t.seat == "rearRight") s.copy(rearRightSeatOccupied = true) else s.copy(driverSeatOccupied = true)
         is TriggerBlock.WiperOn -> s.copy(wiperOn = true)
+        is TriggerBlock.TimeOfDay -> s.copy(hour = t.hour, minute = t.minute)
         is TriggerBlock.TemperatureThreshold -> s.copy(interiorTemp = minOf(8f, t.threshold))
         is TriggerBlock.Manual -> s
     }
