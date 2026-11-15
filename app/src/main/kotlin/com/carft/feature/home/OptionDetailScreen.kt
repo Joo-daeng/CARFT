@@ -22,7 +22,6 @@ import com.carft.designsystem.component.BlockChipSize
 import com.carft.designsystem.component.BlockDot
 import com.carft.designsystem.component.BlockKind
 import com.carft.designsystem.component.CarftButton
-import com.carft.designsystem.component.CarftButtonSize
 import com.carft.designsystem.component.CarftButtonStyle
 import com.carft.designsystem.component.CarftCard
 import com.carft.designsystem.component.CarftIconButton
@@ -54,8 +53,8 @@ fun OptionDetailScreen(
     val card = state.card
     CarftScreen(topBar = {
         CarftTopBar(card?.name ?: "옵션", onBack = onBack) {
-            CarftButton("수정", onEdit, style = CarftButtonStyle.Outline, icon = CarftIcon.Gear)
-            CarftButton("가상 테스트", onSimulate, style = CarftButtonStyle.Outline, icon = CarftIcon.Sparkle)
+            CarftButton("수정", onEdit, style = CarftButtonStyle.Outline, icon = CarftIcon.Edit)
+            CarftButton("가상 테스트", onSimulate, style = CarftButtonStyle.Outline, icon = CarftIcon.Flask)
             CarftIconButton(CarftIcon.More, onOpenMenu, contentDescription = "메뉴")
         }
     }) {
@@ -69,9 +68,9 @@ fun OptionDetailScreen(
                 }
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                CarftButton("삭제", onDelete, style = CarftButtonStyle.DangerSoft, icon = CarftIcon.Warning)
+                CarftButton("삭제", onDelete, style = CarftButtonStyle.DangerSoft, icon = CarftIcon.Trash)
                 Box(Modifier.weight(1f))
-                CarftButton("이 옵션 고치기", onEdit, icon = CarftIcon.Gear)
+                CarftButton("이 옵션 고치기", onEdit, icon = CarftIcon.Edit)
             }
         }
     }
@@ -119,7 +118,7 @@ private fun RankCard(rank: Int, onPriority: () -> Unit) {
             Text("번째", style = CarftType.TitleS, color = CarftColors.TextSecondary, modifier = Modifier.padding(bottom = 10.dp))
         }
         Text("같은 동작이 부딪치면 순서가 높은 옵션이 이겨요", style = CarftType.Caption, color = CarftColors.TextTertiary)
-        CarftButton("우선순위 바꾸기", onPriority, Modifier.fillMaxWidth(), style = CarftButtonStyle.Secondary, size = CarftButtonSize.Small, icon = CarftIcon.List)
+        CarftButton("우선순위 바꾸기", onPriority, Modifier.fillMaxWidth(), style = CarftButtonStyle.Secondary, icon = CarftIcon.List)
     }
 }
 
