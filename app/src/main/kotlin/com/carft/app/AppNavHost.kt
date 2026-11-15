@@ -42,6 +42,7 @@ fun AppNavHost(
         composable(Routes.HOME) {
             HomeRoute(
                 onCreateOption = { navController.navigate(Routes.EDITOR) },
+                onOpenDetail = { navController.navigate(Routes.detail(it)) },
                 onOpenEditor = { navController.navigate(Routes.EDITOR) },
                 onOpenSimulation = { navController.navigate(Routes.simulation(it)) },
                 onOpenRecommend = { navController.navigate(Routes.RECOMMEND) },
