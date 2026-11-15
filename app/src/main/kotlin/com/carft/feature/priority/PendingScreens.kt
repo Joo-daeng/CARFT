@@ -1,15 +1,18 @@
 package com.carft.feature.priority
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carft.app.carftViewModel
 import com.carft.designsystem.component.CarftScreen
 import com.carft.designsystem.component.CarftTopBar
 import com.carft.ui.component.ScreenPlaceholder
 
 @Composable
 fun PriorityRoute(onBack: () -> Unit) {
-    CarftScreen(topBar = { CarftTopBar("우선순위", subtitle = "위에 있는 옵션이 먼저 실행돼요", onBack = onBack) }) {
-        ScreenPlaceholder("16:1872")
-    }
+    val viewModel = carftViewModel { PriorityViewModel(it) }
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    PriorityScreen(state = state, onBack = onBack, onMoveUp = viewModel::moveUp, onMoveDown = viewModel::moveDown)
 }
 
 @Composable
