@@ -18,7 +18,8 @@ data class CarStateUi(
     val tempTone: StatusTone,
     val rearBelt: String,
     val driverSeat: String,
-    val driving: Boolean
+    val driving: Boolean,
+    val applied: List<String> = emptyList()
 )
 
 data class RecentRunUi(

@@ -40,6 +40,14 @@ class PleosVehicle(context: Context) {
         override fun onFailed(e: Exception) = fail("interiorTemp", e)
     }
 
+    private val hvacTarget = object : HvacTemperatureListener {
+        override fun onHvacTemperatureUpdated(temperature: Float?) {
+            _state.update { it.copy(appliedHvacTemp = temperature) }
+        }
+
+        override fun onFailed(e: Exception) = fail("hvacTarget", e)
+    }
+
     private val wiper = object : WiperStateListener {
         override fun onWiperStateUpdated(state: WiperState?) {
             _state.update { it.copy(wiperOn = state?.let { s -> s == WiperState.ON }) }
@@ -57,6 +65,7 @@ class PleosVehicle(context: Context) {
         seat.registerSeatBeltBuckledState(REAR_RIGHT, rearRightBelt)
         vehicle.getHVAC().registerHvacTemperatureCurrent(DRIVER, interiorTemp)
         vehicle.getWiper().registerWiperState(FRONT, wiper)
+        vehicle.getHVAC().registerHvacTemperature(DRIVER, hvacTarget)
     }
 
     fun stop() {
@@ -67,6 +76,7 @@ class PleosVehicle(context: Context) {
         seat.unregisterSeatBeltBuckledState(REAR_RIGHT, rearRightBelt)
         vehicle.getHVAC().unregisterHvacTemperatureCurrent(DRIVER, interiorTemp)
         vehicle.getWiper().unregisterWiperState(FRONT, wiper)
+        vehicle.getHVAC().unregisterHvacTemperature(DRIVER, hvacTarget)
         vehicle.release()
     }
 

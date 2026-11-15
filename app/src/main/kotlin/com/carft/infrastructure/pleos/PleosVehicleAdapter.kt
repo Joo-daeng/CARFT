@@ -68,7 +68,7 @@ class PleosVehicleAdapter(
             hvac.setHvacTemperature(area, value, TemperatureUnit.CELSIUS, { _, v -> ok(v) }, fail)
         }
         val applied = verify(expected = value, match = { abs(it - value) < 0.6f }) {
-            call<Float?> { ok, fail -> hvac.getHvacTemperature(area, TemperatureUnit.CELSIUS, ok, fail) }
+            pleos.state.value.appliedHvacTemp ?: call<Float?> { ok, fail -> hvac.getHvacTemperature(area, TemperatureUnit.CELSIUS, ok, fail) }
         }
         return "공조 ${applied}°C 반영"
     }
