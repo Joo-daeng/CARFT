@@ -59,7 +59,7 @@ fun CarftTopBar(
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         if (onBack != null) CarftIconButton(CarftIcon.Arrow, onClick = onBack, contentDescription = "뒤로", modifier = Modifier.rotate(180f))
-        Text(title, style = CarftType.TitleL, color = CarftColors.TextPrimary)
+        Text(title, style = CarftType.Title, color = CarftColors.TextPrimary)
         if (subtitle != null) Text(subtitle, style = CarftType.BodyM, color = CarftColors.TextSecondary)
         Spacer(Modifier.weight(1f))
         actions()

@@ -15,7 +15,7 @@ object CarftShapes {
     val Small = RoundedCornerShape(12.dp)
     val IconButton = RoundedCornerShape(18.dp)
     val Button = RoundedCornerShape(20.dp)
-    val Card = RoundedCornerShape(24.dp)
+    val Card = RoundedCornerShape(28.dp)
     val Panel = RoundedCornerShape(36.dp)
     val Sheet = RoundedCornerShape(topStart = 36.dp, topEnd = 36.dp)
     val Pill = RoundedCornerShape(999.dp)

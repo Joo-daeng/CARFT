@@ -25,7 +25,7 @@ object CarftColors {
     val StopOnlyText = Color(0xFF30250D)
 
     val Success = Color(0xFF2FBF71)
-    val Warning = Color(0xFFE4B756)
+    val Warning = Color(0xFFFFC23D)
     val Danger = Color(0xFFFF5A5A)
     val Info = Color(0xFF3D8BFF)
     val Neutral = Color(0xFFA3A9B3)
