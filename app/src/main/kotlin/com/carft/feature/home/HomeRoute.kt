@@ -1,18 +1,17 @@
 package com.carft.feature.home
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.carft.app.carftViewModel
-import com.carft.designsystem.component.CarftBrandBar
-import com.carft.designsystem.component.CarftButton
-import com.carft.designsystem.component.CarftButtonStyle
-import com.carft.designsystem.icon.CarftIcon
 
 @Composable
 fun HomeRoute(
     onCreateOption: () -> Unit,
+    onOpenDetail: (optionId: String) -> Unit,
     onOpenEditor: (optionId: String) -> Unit,
     onOpenSimulation: (optionId: String) -> Unit,
     onOpenRecommend: () -> Unit,
@@ -22,21 +21,47 @@ fun HomeRoute(
     onOpenDemoPanel: () -> Unit
 ) {
     val viewModel = carftViewModel { HomeViewModel(it) }
-    val options by viewModel.options.collectAsStateWithLifecycle()
-    Column {
-        CarftBrandBar {
-            CarftButton("추천 옵션", onOpenRecommend, style = CarftButtonStyle.Outline, icon = CarftIcon.Sparkle)
-            CarftButton("우선순위", onOpenPriority, style = CarftButtonStyle.Outline, icon = CarftIcon.List)
-            CarftButton("실행 기록", onOpenHistory, style = CarftButtonStyle.Outline, icon = CarftIcon.History)
-            CarftButton("설정", onOpenSettings, style = CarftButtonStyle.Outline, icon = CarftIcon.Gear)
-            CarftButton("시연", onOpenDemoPanel, style = CarftButtonStyle.Ghost)
-        }
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    Box(Modifier.fillMaxSize()) {
         HomeScreen(
-            options = options,
-            viewModel = viewModel,
-            onCreateOption = onCreateOption,
-            onEditOption = { index -> options.getOrNull(index)?.let { onOpenEditor(it.id) } },
-            onTestOption = { index -> options.getOrNull(index)?.let { onOpenSimulation(it.id) } }
+            state = state,
+            onOpenRecommend = onOpenRecommend,
+            onOpenPriority = onOpenPriority,
+            onOpenHistory = onOpenHistory,
+            onOpenSettings = onOpenSettings,
+            onOpenDemoPanel = onOpenDemoPanel,
+            onOpenDetail = onOpenDetail,
+            onToggle = viewModel::setEnabled,
+            onOpenMenu = viewModel::openMenu,
+            onCreate = onCreateOption
         )
+        state.menuFor?.let { option ->
+            OptionMenuSheet(
+                option = option,
+                onDismiss = viewModel::closeMenu,
+                onEdit = {
+                    viewModel.closeMenu()
+                    onOpenEditor(option.id)
+                },
+                onSimulate = {
+                    viewModel.closeMenu()
+                    onOpenSimulation(option.id)
+                },
+                onPriority = {
+                    viewModel.closeMenu()
+                    onOpenPriority()
+                },
+                onToggle = {
+                    viewModel.setEnabled(option.id, !option.enabled)
+                    viewModel.closeMenu()
+                },
+                onDelete = { viewModel.askDelete(option.id) }
+            )
+        }
+        state.confirmDeleteFor?.let { option ->
+            DeleteConfirmSheet(option, onCancel = viewModel::cancelDelete, onConfirm = viewModel::confirmDelete)
+        }
+        state.undo?.let { UndoToast(it, onUndo = viewModel::undoDelete) }
     }
 }
