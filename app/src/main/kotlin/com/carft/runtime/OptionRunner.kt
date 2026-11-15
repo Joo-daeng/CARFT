@@ -72,7 +72,7 @@ class OptionRunner(
         is TriggerBlock.WiperOn -> rose(before.wiperOn, now.wiperOn)
     }
 
-    private fun rose(before: Boolean?, now: Boolean?) = now == true && before != true
+    private fun rose(before: Boolean?, now: Boolean?) = now == true && before == false
 
     private fun seat(s: VehicleState, seat: String, occupied: Boolean): Boolean? = when (seat) {
         "rearRight" -> if (occupied) s.rearRightSeatOccupied else s.rearRightBeltBuckled

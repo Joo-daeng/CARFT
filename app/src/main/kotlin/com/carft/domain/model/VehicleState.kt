@@ -8,7 +8,7 @@ data class VehicleState(
     val rearRightBeltBuckled: Boolean? = null,
     val wiperOn: Boolean? = null,
     val isDriving: Boolean = false,
-    val hour: Int = 7,
+    val hour: Int = 8,
     val targetHvacTemp: Float = 20f,
     val seatHeatLevel: Map<String, Int> = mapOf("driver" to 0, "rearRight" to 0),
     val ambientLightColor: String = "off",
