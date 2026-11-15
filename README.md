@@ -1,4 +1,4 @@
-# Car Lego - Hyundai App Competition
+# CARFT
 
 Pleos Connect 기반 노코드 차량 자동화 앱
 
@@ -31,7 +31,7 @@ Pleos Connect 기반 노코드 차량 자동화 앱
 
 ```
 app/
-├── src/main/kotlin/com/hyundai/carlego/
+├── src/main/kotlin/com/carft/
 │   ├── domain/        # 비즈니스 로직 (규칙 엔진, 모델)
 │   ├── ui/            # Compose 화면
 │   ├── infrastructure/# VehicleAdapter (Pleos SDK)

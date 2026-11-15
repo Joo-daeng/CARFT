@@ -33,7 +33,7 @@ CarftTheme {
 debug 빌드에는 런처에 **CARFT 디자인** 앱이 따로 생긴다. 모든 컴포넌트를 한 화면에서 볼 수 있다.
 
 ```bash
-adb shell am start -n com.hyundai.carlego/.DesignCatalogActivity
+adb shell am start -n com.carft/.DesignCatalogActivity
 ```
 
 Android Studio에서는 `catalog/DesignCatalog.kt`의 Preview로 본다.

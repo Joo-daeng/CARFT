@@ -6,7 +6,7 @@
             android:name=".DesignCatalogActivity"
             android:exported="true"
             android:label="CARFT 디자인"
-            android:theme="@style/Theme.CarLego">
+            android:theme="@style/Theme.Carft">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
