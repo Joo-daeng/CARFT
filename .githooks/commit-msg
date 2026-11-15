@@ -1,0 +1,15 @@
+#!/bin/sh
+TYPES='feat|fix|refactor|chore|style|docs|test|perf|ci'
+
+subject=$(grep -v '^#' "$1" | sed '/^[[:space:]]*$/d' | head -n 1)
+
+case "$subject" in
+    Merge\ *|Revert\ *|fixup!\ *|squash!\ *|amend!\ *) exit 0 ;;
+esac
+
+if ! printf '%s' "$subject" | grep -Eq "^($TYPES): [^ ]"; then
+    echo "✖ 커밋 메시지 형식이 맞지 않습니다: \"$subject\"" >&2
+    echo "  형식: {타입}: {한국어 요약}  예) feat: 와이퍼 상황 블록 추가" >&2
+    echo "  타입: $(echo "$TYPES" | tr '|' ' ')" >&2
+    exit 1
+fi
