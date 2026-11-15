@@ -22,7 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 class AppContainer(context: Context, private val scope: CoroutineScope) {
     private val store = PersistentStore(context)
@@ -52,8 +52,8 @@ class AppContainer(context: Context, private val scope: CoroutineScope) {
     }
 
     private fun startClock() {
-        val now = LocalTime.now()
-        vehicle.simulate { it.copy(hour = now.hour, minute = now.minute) }
+        val now = LocalDateTime.now()
+        vehicle.simulate { it.copy(hour = now.hour, minute = now.minute, dayOfWeek = now.dayOfWeek.value) }
         scope.launch {
             while (true) {
                 delay(MINUTE_MS - System.currentTimeMillis() % MINUTE_MS)

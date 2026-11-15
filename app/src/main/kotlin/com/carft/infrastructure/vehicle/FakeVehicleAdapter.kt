@@ -51,6 +51,15 @@ class FakeVehicleAdapter : VehicleAdapter {
             is ActionBlock.PlayTextToSpeech -> {
                 "음성: ${action.text}"
             }
+            is ActionBlock.SteeringHeat -> {
+                fakeState["steeringHeat"] = true
+                "핸들 열선 켜기"
+            }
+            is ActionBlock.CabinLight -> {
+                fakeState["cabinLight"] = true
+                "실내등 켜기"
+            }
+            is ActionBlock.NaviDestination -> "내비 목적지 설정"
         }
     }
 

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.carft.app.AppContainer
 import com.carft.data.Draft
-import com.carft.domain.model.ActionBlock
+import com.carft.domain.model.isStopOnly
 import com.carft.domain.rule.ValidationResult
 import com.carft.domain.rule.Validator
 import com.carft.feature.home.DrivingRuleUi
@@ -34,7 +34,7 @@ class EditorFlowViewModel(private val container: AppContainer) : ViewModel() {
             ),
             suggestions = (listOf("하린이 아침", "출근 모드", "비 오는 등원", "퇴근길", "나의 옵션") - options.map { it.name }.toSet()).take(5),
             validation = Validator.validate(draft.optionId, draft.trigger, draft.conditions, draft.logic, draft.actions, options),
-            drivingRules = draft.actions.map { DrivingRuleUi(it.toChip(), !it.stopOnly()) }
+            drivingRules = draft.actions.map { DrivingRuleUi(it.toChip(), !it.isStopOnly()) }
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, EditorFlowUiState(container.draft.draft.value))
 
@@ -45,13 +45,6 @@ class EditorFlowViewModel(private val container: AppContainer) : ViewModel() {
         val existing = container.options.get(option.id)
         container.options.upsert(option.copy(isEnabled = existing?.isEnabled ?: option.isEnabled))
         return option.id
-    }
-
-    private fun ActionBlock.stopOnly() = when (this) {
-        is ActionBlock.SetHvacTemperature -> requiresStationary
-        is ActionBlock.SetSeatHeat -> requiresStationary
-        is ActionBlock.SetAmbientLight -> requiresStationary
-        is ActionBlock.PlayTextToSpeech -> requiresStationary
     }
 
     private companion object {

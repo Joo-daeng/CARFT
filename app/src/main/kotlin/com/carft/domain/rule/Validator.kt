@@ -4,6 +4,9 @@ import com.carft.domain.model.ActionBlock
 import com.carft.domain.model.ConditionBlock
 import com.carft.domain.model.Option
 import com.carft.domain.model.TriggerBlock
+import com.carft.domain.model.clockText
+import com.carft.domain.model.timeSlotContains
+import com.carft.domain.model.timeSlotLabel
 
 data class ValidationCheck(val label: String, val ok: Boolean, val detail: String? = null, val blocking: Boolean = true)
 
@@ -23,7 +26,7 @@ object Validator {
     ): ValidationResult = ValidationResult(
         listOf(
             completeness(trigger, actions),
-            consistency(conditions, logic),
+            consistency(trigger, conditions, logic),
             conflicts(optionId, trigger, actions, others)
         )
     )
@@ -38,18 +41,23 @@ object Validator {
         }
     )
 
-    private fun consistency(conditions: List<ConditionBlock>, logic: String): ValidationCheck {
+    private fun consistency(trigger: TriggerBlock?, conditions: List<ConditionBlock>, logic: String): ValidationCheck {
         if (logic.uppercase() != "AND") return ValidationCheck("조건이 서로 부딪히지 않아요", true)
         val ranges = conditions.filterIsInstance<ConditionBlock.TemperatureRange>()
         val tempClash = ranges.size > 1 && ranges.maxOf { it.minTemp } > ranges.minOf { it.maxTemp }
         val hours = conditions.filterIsInstance<ConditionBlock.IsDay>().map { it.hour }.distinct()
         val hourClash = hours.size > 1
+        val slotClash = (trigger as? TriggerBlock.TimeOfDay)?.let { time ->
+            conditions.filterIsInstance<ConditionBlock.TimeSlot>().firstOrNull { !timeSlotContains(it.slot, time.hour) }
+                ?.let { time to it }
+        }
         return ValidationCheck(
             label = "조건이 서로 부딪히지 않아요",
-            ok = !tempClash && !hourClash,
+            ok = !tempClash && !hourClash && slotClash == null,
             detail = when {
                 tempClash -> "실내 온도 조건의 범위가 겹치지 않아요"
                 hourClash -> "시각 조건이 서로 달라요"
+                slotClash != null -> "${clockText(slotClash.first.hour, slotClash.first.minute)}은 시간대 '${timeSlotLabel(slotClash.second.slot)}'에 들어가지 않아요"
                 else -> null
             }
         )
@@ -93,6 +101,9 @@ object Validator {
         is ActionBlock.SetSeatHeat -> "좌석 열선"
         is ActionBlock.SetAmbientLight -> "조명 색"
         is ActionBlock.PlayTextToSpeech -> "음성 안내"
+        is ActionBlock.SteeringHeat -> "핸들 열선"
+        is ActionBlock.CabinLight -> "실내등"
+        is ActionBlock.NaviDestination -> "내비 목적지"
     }
 
     private fun value(a: ActionBlock) = when (a) {
@@ -100,6 +111,9 @@ object Validator {
         is ActionBlock.SetSeatHeat -> "${a.level}단"
         is ActionBlock.SetAmbientLight -> a.color
         is ActionBlock.PlayTextToSpeech -> a.text
+        is ActionBlock.SteeringHeat -> "켜기"
+        is ActionBlock.CabinLight -> "켜기"
+        is ActionBlock.NaviDestination -> "목적지"
     }
 
     private fun formatTemp(t: Float) = if (t % 1f == 0f) t.toInt().toString() else t.toString()

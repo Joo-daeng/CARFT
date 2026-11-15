@@ -7,6 +7,7 @@ import com.carft.domain.model.Block
 import com.carft.domain.model.ConditionBlock
 import com.carft.domain.model.Rule
 import com.carft.domain.model.TriggerBlock
+import com.carft.domain.model.isStopOnly
 
 data class BlockChipUi(val text: String, val kind: BlockKind, val icon: CarftIcon)
 
@@ -25,8 +26,8 @@ fun Rule.toUi(): RuleUi = RuleUi(
 )
 
 fun seatLabel(seat: String): String = when (seat) {
-    "rearRight" -> "뒷좌석"
-    "rearLeft" -> "뒷좌석 왼쪽"
+    "rearRight" -> "오른쪽 뒷좌석"
+    "rearLeft" -> "왼쪽 뒷좌석"
     "passenger" -> "조수석"
     else -> "운전석"
 }
@@ -41,10 +42,16 @@ fun Block.toChip(): BlockChipUi = when (this) {
     is ConditionBlock.IsSeated -> BlockChipUi("${seatLabel(seat)}에 사람이 있으면", BlockKind.Condition, CarftIcon.Seat)
     is ConditionBlock.TemperatureRange -> BlockChipUi(temperatureText(minTemp, maxTemp), BlockKind.Condition, CarftIcon.Thermo)
     is ConditionBlock.IsDay -> BlockChipUi("아침 ${hour}시", BlockKind.Condition, CarftIcon.Clock)
-    is ActionBlock.SetHvacTemperature -> BlockChipUi("공조 ${if (targetTemp % 1f == 0f) targetTemp.toInt() else targetTemp}°C", actionKind(requiresStationary), CarftIcon.Fan)
-    is ActionBlock.SetSeatHeat -> BlockChipUi("${seatLabel(seat)} 열선 ${level}단", actionKind(requiresStationary), CarftIcon.Heat)
-    is ActionBlock.SetAmbientLight -> BlockChipUi("앰비언트 조명", actionKind(requiresStationary), CarftIcon.Bulb)
-    is ActionBlock.PlayTextToSpeech -> BlockChipUi("음성 안내", actionKind(requiresStationary), CarftIcon.Speaker)
+    is ConditionBlock.Weekday -> BlockChipUi(displayName(), BlockKind.Condition, CarftIcon.Calendar)
+    is ConditionBlock.TimeSlot -> BlockChipUi(displayName(), BlockKind.Condition, CarftIcon.Clock)
+    is ConditionBlock.WiperOff -> BlockChipUi("와이퍼 꺼짐", BlockKind.Condition, CarftIcon.Wiper)
+    is ActionBlock.SetHvacTemperature -> BlockChipUi("공조 ${if (targetTemp % 1f == 0f) targetTemp.toInt() else targetTemp}°C", actionKind(isStopOnly()), CarftIcon.Fan)
+    is ActionBlock.SetSeatHeat -> BlockChipUi("${seatLabel(seat)} 열선 ${level}단", actionKind(isStopOnly()), CarftIcon.Heat)
+    is ActionBlock.SetAmbientLight -> BlockChipUi("앰비언트 조명", actionKind(isStopOnly()), CarftIcon.Bulb)
+    is ActionBlock.PlayTextToSpeech -> BlockChipUi("음성 안내", actionKind(isStopOnly()), CarftIcon.Speaker)
+    is ActionBlock.SteeringHeat -> BlockChipUi("핸들 열선", actionKind(isStopOnly()), CarftIcon.Steering)
+    is ActionBlock.CabinLight -> BlockChipUi("실내등 켜기", actionKind(isStopOnly()), CarftIcon.Bulb)
+    is ActionBlock.NaviDestination -> BlockChipUi("내비 목적지", actionKind(isStopOnly()), CarftIcon.Nav)
     else -> BlockChipUi(displayName(), BlockKind.Action, CarftIcon.Sparkle)
 }
 

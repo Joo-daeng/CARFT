@@ -44,10 +44,10 @@ private const val LOOPS = 1000
 
 @Composable
 fun TimeWheelEditor(hour: Int, minute: Int, onPick: (Int, Int) -> Unit) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(32.dp), verticalAlignment = Alignment.CenterVertically) {
+    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Box(
             Modifier
-                .width(332.dp)
+                .fillMaxWidth()
                 .background(CarftColors.App, CarftShapes.Button)
                 .border(1.dp, CarftColors.Stroke, CarftShapes.Button)
                 .padding(horizontal = 16.dp, vertical = 16.dp)
@@ -73,7 +73,7 @@ fun TimeWheelEditor(hour: Int, minute: Int, onPick: (Int, Int) -> Unit) {
                 }
             }
         }
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -85,8 +85,6 @@ fun TimeWheelEditor(hour: Int, minute: Int, onPick: (Int, Int) -> Unit) {
                 Text("선택한 시간", style = CarftType.BodyS, color = CarftColors.TextSecondary)
                 Text(clockText(hour, minute), style = CarftType.LabelS.copy(fontWeight = FontWeight.Bold), color = CarftColors.TextPrimary)
             }
-            Text("매일 ${clockText(hour, minute)}이 되는 순간 실행해요", style = CarftType.BodyS, color = CarftColors.TextSecondary)
-            Text("위아래로 밀거나 숫자를 누르면 그 값으로 바뀌어요", style = CarftType.Caption, color = CarftColors.TextTertiary)
         }
     }
 }

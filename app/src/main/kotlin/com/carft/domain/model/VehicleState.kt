@@ -11,12 +11,17 @@ data class VehicleState(
     val isDriving: Boolean = false,
     val hour: Int = 8,
     val minute: Int = 10,
+    val dayOfWeek: Int = 1,
     val targetHvacTemp: Float = 20f,
     val seatHeatLevel: Map<String, Int> = mapOf("driver" to 0, "rearRight" to 0),
     val ambientLightColor: String = "off",
     val ambientLightBrightness: Int = 0
 ) {
-    fun nextMinute(): VehicleState = if (minute == 59) copy(hour = (hour + 1) % 24, minute = 0) else copy(minute = minute + 1)
+    fun nextMinute(): VehicleState = when {
+        minute < 59 -> copy(minute = minute + 1)
+        hour < 23 -> copy(hour = hour + 1, minute = 0)
+        else -> copy(hour = 0, minute = 0, dayOfWeek = dayOfWeek % 7 + 1)
+    }
 
     companion object {
         fun default() = VehicleState()

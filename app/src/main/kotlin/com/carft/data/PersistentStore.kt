@@ -96,10 +96,16 @@ class PersistentStore(context: Context) {
             is ConditionBlock.IsSeated -> j.put("type", "condition.seated").put("seat", b.seat)
             is ConditionBlock.TemperatureRange -> j.put("type", "condition.temperature").put("min", b.minTemp.toDouble()).put("max", b.maxTemp.toDouble())
             is ConditionBlock.IsDay -> j.put("type", "condition.hour").put("hour", b.hour)
+            is ConditionBlock.Weekday -> j.put("type", "condition.weekday").put("days", b.days)
+            is ConditionBlock.TimeSlot -> j.put("type", "condition.timeSlot").put("slot", b.slot)
+            is ConditionBlock.WiperOff -> j.put("type", "condition.wiperOff")
             is ActionBlock.SetHvacTemperature -> j.put("type", "action.hvac").put("temp", b.targetTemp.toDouble()).put("stopOnly", b.requiresStationary)
             is ActionBlock.SetSeatHeat -> j.put("type", "action.seatHeat").put("seat", b.seat).put("level", b.level).put("stopOnly", b.requiresStationary)
             is ActionBlock.SetAmbientLight -> j.put("type", "action.ambient").put("color", b.color).put("brightness", b.brightness).put("stopOnly", b.requiresStationary)
             is ActionBlock.PlayTextToSpeech -> j.put("type", "action.tts").put("text", b.text).put("stopOnly", b.requiresStationary)
+            is ActionBlock.SteeringHeat -> j.put("type", "action.steeringHeat")
+            is ActionBlock.CabinLight -> j.put("type", "action.cabinLight")
+            is ActionBlock.NaviDestination -> j.put("type", "action.navi")
             else -> error("저장할 수 없는 블록: ${b::class.simpleName}")
         }
     }
@@ -117,10 +123,16 @@ class PersistentStore(context: Context) {
             "condition.seated" -> ConditionBlock.IsSeated(id, j.getString("seat"))
             "condition.temperature" -> ConditionBlock.TemperatureRange(id, j.getDouble("min").toFloat(), j.getDouble("max").toFloat())
             "condition.hour" -> ConditionBlock.IsDay(id, j.getInt("hour"))
+            "condition.weekday" -> ConditionBlock.Weekday(id, j.optString("days", "weekday"))
+            "condition.timeSlot" -> ConditionBlock.TimeSlot(id, j.optString("slot", "morning"))
+            "condition.wiperOff" -> ConditionBlock.WiperOff(id)
             "action.hvac" -> ActionBlock.SetHvacTemperature(id, j.getDouble("temp").toFloat(), stopOnly)
             "action.seatHeat" -> ActionBlock.SetSeatHeat(id, j.getString("seat"), j.getInt("level"), stopOnly)
             "action.ambient" -> ActionBlock.SetAmbientLight(id, j.getString("color"), j.optInt("brightness", 50), stopOnly)
             "action.tts" -> ActionBlock.PlayTextToSpeech(id, j.getString("text"), stopOnly)
+            "action.steeringHeat" -> ActionBlock.SteeringHeat(id)
+            "action.cabinLight" -> ActionBlock.CabinLight(id)
+            "action.navi" -> ActionBlock.NaviDestination(id)
             else -> error("알 수 없는 블록 종류: $type")
         }
     }

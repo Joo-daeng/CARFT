@@ -22,6 +22,9 @@ object ActionConflict {
         is ActionBlock.SetSeatHeat -> "seat-heat:${action.seat}"
         is ActionBlock.SetAmbientLight -> "ambient"
         is ActionBlock.PlayTextToSpeech -> null
+        is ActionBlock.SteeringHeat -> "steering-heat"
+        is ActionBlock.CabinLight -> "cabin-light"
+        is ActionBlock.NaviDestination -> null
     }
 
     fun differs(a: ActionBlock, b: ActionBlock): Boolean = key(a) != null && key(a) == key(b) && value(a) != value(b)
@@ -31,6 +34,9 @@ object ActionConflict {
         is ActionBlock.SetSeatHeat -> if (action.seat == "rearRight") "뒷좌석 열선" else "운전석 열선"
         is ActionBlock.SetAmbientLight -> "앰비언트 조명"
         is ActionBlock.PlayTextToSpeech -> "음성 안내"
+        is ActionBlock.SteeringHeat -> "핸들 열선"
+        is ActionBlock.CabinLight -> "실내등"
+        is ActionBlock.NaviDestination -> "내비 목적지"
     }
 
     fun value(action: ActionBlock): String = when (action) {
@@ -38,6 +44,9 @@ object ActionConflict {
         is ActionBlock.SetSeatHeat -> "${action.level}단"
         is ActionBlock.SetAmbientLight -> action.color
         is ActionBlock.PlayTextToSpeech -> action.text
+        is ActionBlock.SteeringHeat -> "켜기"
+        is ActionBlock.CabinLight -> "켜기"
+        is ActionBlock.NaviDestination -> "목적지"
     }
 
     fun adopt(target: ActionBlock, from: ActionBlock): ActionBlock = when {

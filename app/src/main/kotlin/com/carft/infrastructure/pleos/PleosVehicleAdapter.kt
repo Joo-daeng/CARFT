@@ -47,6 +47,29 @@ class PleosVehicleAdapter(
             speaker.speak(action.text)
             "음성 안내: ${action.text}"
         }
+        is ActionBlock.SteeringHeat -> setSteeringHeat()
+        is ActionBlock.CabinLight -> setCabinLight()
+        is ActionBlock.NaviDestination -> throw UnsupportedOperationException("내비 목적지 미지원")
+    }
+
+    private suspend fun setSteeringHeat(): String {
+        val wheel = vehicle.getSteeringWheel()
+        val range = call<AreaBounds<Int>> { ok, fail -> wheel.checkHvacSteeringWheelHeatCapabilities({ _: CapabilityConfig, b -> ok(b) }, fail) }
+        val value = maxOf(range.maxValue, 1)
+        call<Any?> { ok, fail -> wheel.setHvacSteeringWheelHeat(value, { ok(it) }, fail) }
+        val applied = verify(expected = value, match = { it == value }) {
+            call<Int?> { ok, fail -> wheel.getHvacSteeringWheelHeatState(ok, fail) }
+        }
+        return "핸들 열선 ${applied}단 반영"
+    }
+
+    private suspend fun setCabinLight(): String {
+        val light = vehicle.getLight()
+        call<Any?> { ok, fail -> light.setCabinLightSwitch(LightSwitch.ON, { ok(it) }, fail) }
+        verify(expected = LightSwitch.ON, match = { it == LightSwitch.ON }) {
+            call<LightSwitch?> { ok, fail -> light.getCabinLightSwitch(ok, fail) }
+        }
+        return "실내등 켬"
     }
 
     private suspend fun setHvacTemperature(target: Float): String {

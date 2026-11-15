@@ -27,15 +27,17 @@ fun EditorRoute(onNext: () -> Unit, onQuit: () -> Unit) {
             onSelectTab = viewModel::selectTab,
             onAdd = viewModel::add,
             onEditBlock = viewModel::edit,
-            onSetLogic = viewModel::setLogic
-        )
-        state.editing?.let { block ->
-            BlockPropertySheet(
-                block = block,
-                onChange = viewModel::replace,
-                onRemove = { viewModel.remove(block) },
-                onDone = viewModel::closeEdit
-            )
+            onOpenLogic = viewModel::openLogic,
+            onDeselect = viewModel::closeEdit,
+            onUndoRemove = viewModel::undoRemove,
+            onDismissRemoved = viewModel::dismissRemoved
+        ) { modifier ->
+            val editing = state.editing
+            if (editing != null) {
+                BlockPanel(editing, viewModel::replace, { viewModel.remove(editing) }, viewModel::confirm, modifier)
+            } else {
+                LogicPanel(state.draft, viewModel::setLogic, viewModel::closeEdit, modifier)
+            }
         }
         if (state.confirmQuit) {
             QuitSheet(onKeep = viewModel::cancelQuit, onQuit = {
