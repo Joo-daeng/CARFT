@@ -1,0 +1,41 @@
+name: PR 자동 설정
+
+on:
+  pull_request_target:
+    types: [opened, edited, reopened]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const TYPES = ['feat', 'fix', 'refactor', 'chore', 'style', 'docs', 'test', 'perf', 'ci'];
+            const pr = context.payload.pull_request;
+            const issue = { owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number };
+
+            const match = pr.title.match(/^([a-z]+): \S/);
+            const type = match && TYPES.includes(match[1]) ? match[1] : null;
+            const current = pr.labels.map((l) => l.name);
+
+            for (const name of current) {
+              if (TYPES.includes(name) && name !== type) {
+                await github.rest.issues.removeLabel({ ...issue, name });
+              }
+            }
+            if (type && !current.includes(type)) {
+              await github.rest.issues.addLabels({ ...issue, labels: [type] });
+            }
+
+            if (context.payload.action !== 'edited' && pr.assignees.length === 0 && pr.user.type !== 'Bot') {
+              await github.rest.issues.addAssignees({ ...issue, assignees: [pr.user.login] });
+            }
+
+            if (!type) {
+              core.setFailed(`PR 제목 "${pr.title}"이(가) 형식에 맞지 않아요. {타입}: {한국어 요약} 형식으로 고쳐 주세요. 타입: ${TYPES.join(' ')}`);
+            }

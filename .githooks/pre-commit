@@ -1,0 +1,30 @@
+#!/bin/sh
+TYPES='feat|fix|refactor|chore|style|docs|test|perf|ci'
+MAX_BYTES=5242880
+
+branch=$(git symbolic-ref --short -q HEAD)
+
+if [ "$branch" = "main" ]; then
+    echo "✖ main에 직접 커밋할 수 없습니다. 작업 브랜치를 만드세요: git switch -c feat/설명" >&2
+    exit 1
+fi
+
+if [ -n "$branch" ] && ! printf '%s' "$branch" | grep -Eq "^($TYPES)/[a-z0-9]+(-[a-z0-9]+)*$"; then
+    echo "✖ 브랜치 이름 \"$branch\"이(가) 규칙에 맞지 않습니다." >&2
+    echo "  형식: {타입}/{kebab-case 설명}  예) feat/wiper-block" >&2
+    echo "  변경: git branch -m feat/설명" >&2
+    exit 1
+fi
+
+large=$(git diff --cached --name-only --diff-filter=AM | while IFS= read -r file; do
+    size=$(git cat-file -s ":$file" 2>/dev/null || echo 0)
+    if [ "$size" -gt "$MAX_BYTES" ]; then
+        echo "  $file ($((size / 1048576))MB)"
+    fi
+done)
+
+if [ -n "$large" ]; then
+    echo "✖ 5MB를 넘는 파일은 커밋하지 않습니다." >&2
+    echo "$large" >&2
+    exit 1
+fi
