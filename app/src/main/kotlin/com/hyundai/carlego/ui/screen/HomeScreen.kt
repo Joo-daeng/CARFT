@@ -16,10 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hyundai.carlego.domain.model.Option
+import com.hyundai.carlego.domain.model.VehicleState
+import com.hyundai.carlego.ui.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(
     options: List<Option>,
+    viewModel: HomeViewModel,
     onCreateOption: () -> Unit,
     onEditOption: (Int) -> Unit,
     onTestOption: (Int) -> Unit
@@ -29,12 +32,19 @@ fun HomeScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // 헤더
+        val vehicle by viewModel.vehicleState.collectAsState()
+        val sdkError by viewModel.sdkError.collectAsState()
+        val records by viewModel.records.collectAsState()
+
         Text(
-            text = "Car Lego",
+            text = "CARFT",
             fontSize = 32.sp,
-            modifier = Modifier.padding(bottom = 24.dp)
+            modifier = Modifier.padding(bottom = 16.dp)
         )
+
+        VehicleStateCard(vehicle, sdkError, records.firstOrNull()?.let { "${it.optionName} · ${it.status} · ${it.result}" })
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         // 옵션 생성 버튼
         Button(
@@ -68,7 +78,8 @@ fun HomeScreen(
                     OptionCard(
                         option = option,
                         onEdit = { onEditOption(index) },
-                        onTest = { onTestOption(index) }
+                        onTest = { onTestOption(index) },
+                        onRunNow = { viewModel.runNow(option) }
                     )
                 }
             }
@@ -80,7 +91,8 @@ fun HomeScreen(
 fun OptionCard(
     option: Option,
     onEdit: () -> Unit,
-    onTest: () -> Unit
+    onTest: () -> Unit,
+    onRunNow: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -115,6 +127,14 @@ fun OptionCard(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Button(
+                            onClick = onRunNow,
+                            modifier = Modifier.height(32.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF34C759))
+                        ) {
+                            Text("지금 실행", fontSize = 12.sp)
+                        }
+                        Button(
                             onClick = onTest,
                             modifier = Modifier.height(32.dp),
                             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
@@ -132,5 +152,40 @@ fun OptionCard(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun VehicleStateCard(state: VehicleState, error: String?, lastRun: String?) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("지금 차 상태 · Pleos Vehicle SDK", fontSize = 14.sp)
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                StateItem("실내 온도", state.interiorTemp?.let { "%.1f°C".format(it) })
+                StateItem("운전석", state.driverSeatOccupied?.let { if (it) "앉음" else "비어 있음" })
+                StateItem("운전석 벨트", state.driverBeltBuckled?.let { if (it) "맴" else "안 맴" })
+                StateItem("뒷좌석 오른쪽", state.rearRightSeatOccupied?.let { if (it) "앉음" else "비어 있음" })
+                StateItem("뒷좌석 벨트", state.rearRightBeltBuckled?.let { if (it) "맴" else "안 맴" })
+                StateItem("와이퍼", state.wiperOn?.let { if (it) "켜짐" else "꺼짐" })
+                StateItem("주행", if (state.isDriving) "주행 중" else "정차 중")
+            }
+            if (lastRun != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("최근 실행: $lastRun", fontSize = 12.sp)
+            }
+            if (error != null) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text("SDK 오류: $error", fontSize = 12.sp, color = Color(0xFFFF5A5A))
+            }
+        }
+    }
+}
+
+@Composable
+private fun StateItem(label: String, value: String?) {
+    Column {
+        Text(label, fontSize = 11.sp, color = Color.Gray)
+        Text(value ?: "모름", fontSize = 16.sp)
     }
 }
