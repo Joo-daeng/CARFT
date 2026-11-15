@@ -86,7 +86,6 @@ fun HomeScreen(
             CarftButton("우선순위", onOpenPriority, style = CarftButtonStyle.Outline, icon = CarftIcon.List)
             CarftButton("실행 기록", onOpenHistory, style = CarftButtonStyle.Outline, icon = CarftIcon.History)
             CarftButton("설정", onOpenSettings, style = CarftButtonStyle.Outline, icon = CarftIcon.Gear)
-            DemoButton(onOpenDemoPanel)
         }
         Row(
             Modifier
@@ -113,22 +112,6 @@ fun HomeScreen(
                 RecentCard(state.recent, onOpenHistory)
             }
         }
-    }
-}
-
-@Composable
-private fun DemoButton(onClick: () -> Unit) {
-    Row(
-        Modifier
-            .height(48.dp)
-            .border(2.dp, CarftColors.Demo, CarftShapes.Small)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        CarftIconView(CarftIcon.Car, size = 22.dp, tint = CarftColors.Demo)
-        Text("시연 패널", style = CarftType.LabelS, color = CarftColors.Demo)
     }
 }
 
@@ -304,7 +287,7 @@ private fun RecentCard(recent: RecentRunUi?, onOpenHistory: () -> Unit) {
             Text("전체 보기", style = CarftType.LabelS, color = CarftColors.Info, modifier = Modifier.clickable(onClick = onOpenHistory))
         }
         if (recent == null) {
-            Text("아직 실행된 옵션이 없어요. 시연 패널에서 상황을 만들어 보세요.", style = CarftType.BodyS, color = CarftColors.TextTertiary)
+            Text("아직 실행된 옵션이 없어요", style = CarftType.BodyS, color = CarftColors.TextTertiary)
         } else {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Box(
