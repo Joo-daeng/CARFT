@@ -15,7 +15,7 @@ data class SettingsUiState(
 val DEFAULT_PERMISSIONS = listOf(
     PermissionUi("CAR_SEATS", "착좌 · 벨트 · 열선"),
     PermissionUi("CAR_CLIMATE", "공조 · 실내 온도"),
-    PermissionUi("CAR_LIGHTS", "앰비언트 조명"),
+    PermissionUi("CAR_LIGHTS", "핸들 열선 · 실내등"),
     PermissionUi("CAR_WINDOWS", "와이퍼 상태"),
-    PermissionUi("TTS_SERVICE", "음성 안내")
+    PermissionUi("NAVI_ROUTE_SEARCH", "목적지 설정")
 )
