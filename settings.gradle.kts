@@ -15,6 +15,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "hyundai-pleos"
+rootProject.name = "CARFT"
 include(":app")
 include(":core:designsystem")

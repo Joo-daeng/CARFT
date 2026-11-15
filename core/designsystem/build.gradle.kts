@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.hyundai.carlego.designsystem"
+    namespace = "com.carft.designsystem"
     compileSdk = 34
 
     defaultConfig {

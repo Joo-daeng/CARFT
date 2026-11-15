@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    namespace = "com.hyundai.carlego"
+    namespace = "com.carft"
     useLibrary("android.car")
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.hyundai.carlego"
+        applicationId = "com.carft"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
