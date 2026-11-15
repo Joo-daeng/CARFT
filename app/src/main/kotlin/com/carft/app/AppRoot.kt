@@ -13,7 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carft.designsystem.component.ConflictAlert
+import com.carft.designsystem.component.DimLayer
 import com.carft.appContainer
 import com.carft.domain.model.ExecutionRecord
 import com.carft.feature.demopanel.DemoPanelRoute
@@ -51,6 +55,29 @@ fun AppRoot() {
                 onDismiss = { toast = null },
                 modifier = Modifier.align(Alignment.TopCenter).padding(top = 24.dp)
             )
+        }
+        val conflict by container.runner.pendingConflict.collectAsStateWithLifecycle()
+        val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+        var hiddenAt by remember { mutableStateOf<Long?>(null) }
+        conflict?.takeIf { it.at != hiddenAt && currentRoute != Routes.CONFLICT }?.let { event ->
+            DimLayer(onDismiss = { hiddenAt = event.at }) {
+                ConflictAlert(
+                    title = "옵션 두 개가 부딪쳤어요",
+                    message = "'${event.higherName}' · '${event.lowerName}' 두 옵션의 ${event.target} 값이 서로 달라요.",
+                    leftLabel = "지금 적용 · 순위 높음",
+                    leftName = event.higherName,
+                    leftValue = event.higherValue,
+                    rightLabel = "멈춤",
+                    rightName = event.lowerName,
+                    rightValue = event.lowerValue,
+                    onLater = { hiddenAt = event.at },
+                    onResolve = {
+                        hiddenAt = event.at
+                        navController.navigate(Routes.CONFLICT)
+                    },
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
         DemoPanelRoute(
             viewModel = demoPanel,
