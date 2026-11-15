@@ -21,7 +21,7 @@ object SampleHistory {
         record("하린이 아침", at(now, daysAgo = 3, 7, 40), ExecutionResult.Deferred("실내 온도를 알 수 없어 실행하지 않았어요")),
         record("하린이 아침 ↔ 출근 모드", at(now, daysAgo = 4, 7, 52), ExecutionResult.PartialSuccess(
             listOf(ok("운전석 온도 24°C"), ActionExecutionResult.Conflict("temp", "출근 모드 22°C")),
-            "충돌 · 하린이 아침 값으로 맞춤"
+            "운전석 온도 24°C / 22°C → 하린이 아침 값으로 맞춤"
         ))
     )
 
