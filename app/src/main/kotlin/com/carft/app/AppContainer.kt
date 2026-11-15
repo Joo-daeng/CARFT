@@ -1,7 +1,9 @@
 package com.carft.app
 
 import android.content.Context
+import com.carft.data.AppSettings
 import com.carft.data.DraftStore
+import com.carft.data.PersistentStore
 import com.carft.data.HistoryRepository
 import com.carft.data.InMemoryHistoryRepository
 import com.carft.data.InMemoryOptionRepository
@@ -17,13 +19,16 @@ import com.carft.infrastructure.pleos.PleosVehicle
 import com.carft.infrastructure.pleos.PleosVehicleAdapter
 import com.carft.runtime.OptionRunner
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.launch
 
-class AppContainer(context: Context, scope: CoroutineScope) {
+class AppContainer(context: Context, private val scope: CoroutineScope) {
+    private val store = PersistentStore(context)
     val vehicle = PleosVehicle(context)
     val speaker = PleosSpeaker(context)
-    val options: OptionRepository = InMemoryOptionRepository(SampleOptions.all())
+    val options: OptionRepository = InMemoryOptionRepository(store.loadOptions() ?: SampleOptions.all())
     val history: HistoryRepository = InMemoryHistoryRepository(SampleHistory.all())
-    val settings: SettingsRepository = InMemorySettingsRepository()
+    val settings: SettingsRepository = InMemorySettingsRepository(store.loadSettings() ?: AppSettings())
     val draft = DraftStore()
     val vehicleAdapter = PleosVehicleAdapter(vehicle, speaker)
     val runner = OptionRunner(
@@ -36,6 +41,8 @@ class AppContainer(context: Context, scope: CoroutineScope) {
     )
 
     fun start() {
+        scope.launch { options.options.drop(1).collect { store.saveOptions(it) } }
+        scope.launch { settings.settings.drop(1).collect { store.saveSettings(it) } }
         vehicle.start()
         speaker.start()
         runner.start()
