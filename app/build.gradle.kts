@@ -5,6 +5,7 @@ plugins {
 
 android {
     namespace = "com.hyundai.carlego"
+    useLibrary("android.car")
     compileSdk = 34
 
     defaultConfig {
@@ -59,4 +60,7 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.compose.foundation:foundation:1.5.4")
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
+
+    implementation("ai.pleos.playground:Vehicle:2.3.2")
+    implementation("ai.pleos.playground:TextToSpeech:3.3.1")
 }
