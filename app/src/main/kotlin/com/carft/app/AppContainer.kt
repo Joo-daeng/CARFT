@@ -1,6 +1,7 @@
 package com.carft.app
 
 import android.content.Context
+import com.carft.data.DraftStore
 import com.carft.data.HistoryRepository
 import com.carft.data.InMemoryHistoryRepository
 import com.carft.data.InMemoryOptionRepository
@@ -23,6 +24,7 @@ class AppContainer(context: Context, scope: CoroutineScope) {
     val options: OptionRepository = InMemoryOptionRepository(SampleOptions.all())
     val history: HistoryRepository = InMemoryHistoryRepository(SampleHistory.all())
     val settings: SettingsRepository = InMemorySettingsRepository()
+    val draft = DraftStore()
     val vehicleAdapter = PleosVehicleAdapter(vehicle, speaker)
     val runner = OptionRunner(
         scope = scope,

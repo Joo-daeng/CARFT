@@ -40,7 +40,7 @@ fun Block.toChip(): BlockChipUi = when (this) {
     is ConditionBlock.IsSeated -> BlockChipUi("${seatLabel(seat)}에 사람이 있으면", BlockKind.Condition, CarftIcon.Seat)
     is ConditionBlock.TemperatureRange -> BlockChipUi(temperatureText(minTemp, maxTemp), BlockKind.Condition, CarftIcon.Thermo)
     is ConditionBlock.IsDay -> BlockChipUi("아침 ${hour}시", BlockKind.Condition, CarftIcon.Clock)
-    is ActionBlock.SetHvacTemperature -> BlockChipUi("공조 ${targetTemp.toInt()}°C", actionKind(requiresStationary), CarftIcon.Fan)
+    is ActionBlock.SetHvacTemperature -> BlockChipUi("공조 ${if (targetTemp % 1f == 0f) targetTemp.toInt() else targetTemp}°C", actionKind(requiresStationary), CarftIcon.Fan)
     is ActionBlock.SetSeatHeat -> BlockChipUi("${seatLabel(seat)} 열선 ${level}단", actionKind(requiresStationary), CarftIcon.Heat)
     is ActionBlock.SetAmbientLight -> BlockChipUi("앰비언트 조명", actionKind(requiresStationary), CarftIcon.Bulb)
     is ActionBlock.PlayTextToSpeech -> BlockChipUi("음성 안내", actionKind(requiresStationary), CarftIcon.Speaker)
