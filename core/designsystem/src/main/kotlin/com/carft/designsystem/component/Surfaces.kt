@@ -86,7 +86,7 @@ fun MetricTile(
             )
             if (unit != null) Text(unit, style = CarftType.TitleS, color = CarftColors.TextSecondary)
         }
-        if (caption != null) Text(caption, style = CarftType.LabelS, color = CarftColors.Info, maxLines = 1, softWrap = false)
+        if (caption != null) Text(caption, style = CarftType.LabelS, color = CarftColors.Info, maxLines = 1, softWrap = false, modifier = Modifier.padding(top = 8.dp))
     }
 }
 
